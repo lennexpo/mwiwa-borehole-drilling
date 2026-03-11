@@ -11,36 +11,47 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    cursor.style.left = mouseX + 'px';
-    cursor.style.top = mouseY + 'px';
+    if(cursor) {
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
+    }
   });
 
   function animateFollower() {
-    followerX += (mouseX - followerX) * 0.12;
-    followerY += (mouseY - followerY) * 0.12;
-    follower.style.left = followerX + 'px';
-    follower.style.top = followerY + 'px';
+    if(follower) {
+      followerX += (mouseX - followerX) * 0.12;
+      followerY += (mouseY - followerY) * 0.12;
+      follower.style.left = followerX + 'px';
+      follower.style.top = followerY + 'px';
+    }
     requestAnimationFrame(animateFollower);
   }
   animateFollower();
 
-  document.querySelectorAll('a, button, .gallery-item, .service-card').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.transform = 'translate(-50%, -50%) scale(2)';
-      cursor.style.background = 'rgba(35,137,218,0.5)';
-      follower.style.transform = 'translate(-50%, -50%) scale(1.5)';
+  function addCursorEvents(elements) {
+    elements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        if(cursor) {
+          cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+          cursor.style.background = 'rgba(35,137,218,0.5)';
+        }
+        if(follower) follower.style.transform = 'translate(-50%, -50%) scale(1.5)';
+      });
+      el.addEventListener('mouseleave', () => {
+        if(cursor) {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+          cursor.style.background = '#2389DA';
+        }
+        if(follower) follower.style.transform = 'translate(-50%, -50%) scale(1)';
+      });
     });
-    el.addEventListener('mouseleave', () => {
-      cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-      cursor.style.background = '#2389DA';
-      follower.style.transform = 'translate(-50%, -50%) scale(1)';
-    });
-  });
+  }
+  addCursorEvents(document.querySelectorAll('a, button, .gallery-item, .service-card'));
 
   /* ---- Navbar Scroll ---- */
   const nav = document.querySelector('nav');
   window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 40);
+    if(nav) nav.classList.toggle('scrolled', window.scrollY > 40);
   });
 
   /* ---- Hero BG Parallax ---- */
@@ -65,35 +76,71 @@ document.addEventListener('DOMContentLoaded', () => {
     spans[2].style.transform = open ? 'rotate(-45deg) translateY(-7px)' : '';
   });
 
-  navLinks?.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      navLinks.classList.remove('open');
-      const spans = hamburger.querySelectorAll('span');
-      spans[0].style.transform = '';
-      spans[1].style.opacity = '1';
-      spans[2].style.transform = '';
-    });
-  });
+  /* ---- CMS Borehole Projects Loader ---- */
+  const repoOwner = 'lennexpo';
+  const repoName = 'mwiwa-borehole-drilling';
 
-  /* ---- Smooth Scroll ---- */
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
-      const target = document.querySelector(anchor.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        const offset = 70;
-        const top = target.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({ top, behavior: 'smooth' });
+  async function loadBoreholeProjects() {
+    const gallery = document.getElementById('project-gallery');
+    if (!gallery) return;
+
+    try {
+      const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/data/projects`);
+      if (!response.ok) return;
+      const files = await response.json();
+      
+      // We don't clear innerHTML here in case you have some hardcoded ones
+      // But if you want it purely CMS, uncomment the next line:
+      // gallery.innerHTML = ''; 
+
+      for (const file of files) {
+        if (file.name === '.gitkeep') continue;
+
+        const contentRes = await fetch(file.download_url);
+        const text = await contentRes.text();
+
+        const title = (text.match(/title:\s*"(.*)"/) || [])[1] || "Mwiwa Project";
+        let imgPath = (text.match(/image:\s*"(.*)"/) || [])[1] || "";
+        if (imgPath.startsWith('/')) imgPath = imgPath.substring(1);
+
+        // Create new item matching your existing gallery-item style
+        const item = document.createElement('div');
+        item.className = 'gallery-item reveal'; 
+        item.innerHTML = `
+          <img src="${imgPath}" alt="${title}" onerror="this.src='img1.jpeg'">
+          <div class="gallery-overlay">
+            <h4>${title}</h4>
+          </div>
+        `;
+
+        gallery.appendChild(item);
+
+        // 1. Add cursor hover effects to the new item
+        addCursorEvents([item]);
+
+        // 2. Add lightbox functionality to the new item
+        item.addEventListener('click', () => {
+          const lb = document.getElementById('lightbox');
+          const lbImg = document.getElementById('lightbox-img');
+          if(lb && lbImg) {
+            lbImg.src = item.querySelector('img').src;
+            lb.classList.add('active');
+            document.body.style.overflow = 'hidden';
+          }
+        });
+
+        // 3. Tell your existing Observer to watch this new card for animations
+        revealObserver.observe(item);
       }
-    });
-  });
+    } catch (e) { console.log("Projects syncing..."); }
+  }
+  loadBoreholeProjects();
 
   /* ---- Scroll Reveal ---- */
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
-        // Stagger children if present
         const children = entry.target.querySelectorAll('.reveal-child');
         children.forEach((child, i) => {
           setTimeout(() => child.classList.add('visible'), i * 120);
@@ -106,15 +153,25 @@ document.addEventListener('DOMContentLoaded', () => {
     revealObserver.observe(el);
   });
 
+  /* ---- Smooth Scroll ---- */
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', (e) => {
+      const target = document.querySelector(anchor.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        const top = target.getBoundingClientRect().top + window.scrollY - 70;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+
   /* ---- Counter Animation ---- */
   function animateCounter(el) {
     const target = parseInt(el.dataset.target);
     const suffix = el.dataset.suffix || '';
-    const duration = 2000;
-    const step = target / (duration / 16);
     let current = 0;
     const timer = setInterval(() => {
-      current += step;
+      current += target / 125;
       if (current >= target) {
         current = target;
         clearInterval(timer);
@@ -126,43 +183,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const counterObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        const counters = entry.target.querySelectorAll('[data-target]');
-        counters.forEach(c => animateCounter(c));
+        entry.target.querySelectorAll('[data-target]').forEach(c => animateCounter(c));
         counterObserver.unobserve(entry.target);
       }
     });
   }, { threshold: 0.5 });
 
-  document.querySelectorAll('.hero-stats, .stats-bar').forEach(el => {
-    counterObserver.observe(el);
-  });
+  document.querySelectorAll('.hero-stats, .stats-bar').forEach(el => counterObserver.observe(el));
 
-  /* ---- Gallery Lightbox ---- */
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-
-  document.querySelectorAll('.gallery-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const img = item.querySelector('img');
-      lightboxImg.src = img.src;
-      lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    });
-  });
-
-  document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
-  lightbox?.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeLightbox();
-  });
-
+  /* ---- Lightbox Close ---- */
   function closeLightbox() {
-    lightbox.classList.remove('active');
-    document.body.style.overflow = '';
+    const lb = document.getElementById('lightbox');
+    if(lb) {
+      lb.classList.remove('active');
+      document.body.style.overflow = '';
+    }
   }
+  document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
+  document.getElementById('lightbox')?.addEventListener('click', (e) => {
+    if (e.target.id === 'lightbox') closeLightbox();
+  });
 
   /* ---- Form Submit ---- */
   const form = document.getElementById('contact-form');
@@ -183,29 +223,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1500);
   });
 
-  /* ---- Active Nav Link Highlight ---- */
-  const sections = document.querySelectorAll('section[id]');
-  const navLinkEls = document.querySelectorAll('.nav-links a[href^="#"]');
-
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(sec => {
-      if (window.scrollY >= sec.offsetTop - 120) {
-        current = sec.getAttribute('id');
-      }
-    });
-    navLinkEls.forEach(link => {
-      link.style.color = link.getAttribute('href') === `#${current}` ? '#C8F53E' : '';
-    });
-  });
-
-  /* ---- Particle Water Effect on Hero ---- */
+  /* ---- Particle Water Effect ---- */
   const canvas = document.getElementById('particles');
   if (canvas) {
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
     const particles = [];
     for (let i = 0; i < 40; i++) {
       particles.push({
@@ -216,7 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
         opacity: Math.random() * 0.4 + 0.1
       });
     }
-
     function drawParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => {
@@ -230,11 +252,5 @@ document.addEventListener('DOMContentLoaded', () => {
       requestAnimationFrame(drawParticles);
     }
     drawParticles();
-
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
   }
-
 });
