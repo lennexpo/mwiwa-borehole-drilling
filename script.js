@@ -251,47 +251,46 @@ async function loadBoreholeProjects() {
     if (!gallery) return;
 
     try {
-        // 1. Fetch the project files from GitHub API
-        const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/data/projects`);
+        // 1. Get the list of project files
+        const response = await fetch(`https://api.github.com/repos/lennexpo/mwiwa-borehole-drilling/contents/data/projects`);
         const files = await response.json();
 
-        gallery.innerHTML = ''; // Clear the gallery
+        gallery.innerHTML = ''; // Clear the "Loading" message
 
         for (const file of files) {
             if (file.name === '.gitkeep') continue;
 
-            // 2. Get the text inside the .md file
+            // 2. Get the actual text inside the file
             const contentRes = await fetch(file.download_url);
             const text = await contentRes.text();
 
-            // 3. Extract Title and Image Path
+            // 3. Extract the data using simple regex (since we aren't using a heavy library)
             const titleMatch = text.match(/title:\s*"(.*)"/);
             const imageMatch = text.match(/image:\s*"(.*)"/);
-            
-            const title = titleMatch ? titleMatch[1] : "Borehole Project";
-            let imagePath = imageMatch ? imageMatch[1] : "";
+            const locationMatch = text.match(/location:\s*"(.*)"/);
 
-            // FIX: If Decap CMS saved the path as "/images/uploads/img.jpg", 
-            // we remove the first "/" so it works on GitHub Pages
+            const title = titleMatch ? titleMatch[1] : "Mwiwa Project";
+            const location = locationMatch ? locationMatch[1] : "Zimbabwe";
+            
+            // CRITICAL: Ensure the image path works for GitHub Pages
+            let imagePath = imageMatch ? imageMatch[1] : "";
+            // If the path starts with a slash (e.g. /images/uploads), remove it for the fetch
             if (imagePath.startsWith('/')) {
                 imagePath = imagePath.substring(1);
             }
 
-            // 4. Build the Card
-            const card = `
+            // 4. Create the Card
+            gallery.innerHTML += `
                 <div class="project-card">
-                    <img src="${imagePath}" alt="${title}" loading="lazy">
-                    <div class="card-content">
+                    <img src="${imagePath}" alt="${title}" onerror="this.src='img1.jpeg'">
+                    <div class="card-info">
                         <h3>${title}</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> ${location}</p>
                     </div>
                 </div>
             `;
-            gallery.innerHTML += card;
         }
     } catch (error) {
-        console.error("CMS Load Error:", error);
-        gallery.innerHTML = '<p>Check back soon for new project updates!</p>';
+        console.error("Error loading projects:", error);
     }
 }
-
-document.addEventListener('DOMContentLoaded', loadBoreholeProjects);
