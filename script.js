@@ -238,3 +238,47 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+// --- KEEP YOUR OLD CODE ABOVE THIS LINE ---
+
+const repoOwner = 'lennexpo';
+const repoName = 'mwiwa-borehole-drilling';
+
+async function loadBoreholeProjects() {
+    const gallery = document.getElementById('project-gallery'); 
+    if (!gallery) return;
+
+    try {
+        const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/data/projects`);
+        const files = await response.json();
+
+        // Clear any hardcoded "Loading..." text
+        gallery.innerHTML = '';
+
+        for (const file of files) {
+            if (file.name === '.gitkeep') continue;
+
+            const contentRes = await fetch(file.download_url);
+            const text = await contentRes.text();
+
+            // This part extracts the Title and Image from the CMS file
+            const titleMatch = text.match(/title:\s*"(.*)"/);
+            const imageMatch = text.match(/image:\s*"(.*)"/);
+            
+            const title = titleMatch ? titleMatch[1] : "Mwiwa Project";
+            const image = imageMatch ? imageMatch[1] : "img1.jpeg";
+
+            // Create the HTML for the card
+            const card = `
+                <div class="project-card">
+                    <img src="${image}" alt="${title}" style="width:100%">
+                    <h3>${title}</h3>
+                </div>
+            `;
+            gallery.innerHTML += card;
+        }
+    } catch (error) {
+        console.log("Waiting for first project to be added...");
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadBoreholeProjects);
