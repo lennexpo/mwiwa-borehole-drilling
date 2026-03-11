@@ -1,0 +1,31 @@
+# 1. Connection (The key to your GitHub)
+backend:
+  name: git-gateway
+  repo: lennexpo/mwiwa-borehole-drilling
+  branch: main
+  auth_type: pkce
+  base_url: https://auth.decapbridge.com
+  auth_endpoint: /sites/9f7698f3-5c36-4335-af98-fe088a250b2b/pkce
+  auth_token_endpoint: /sites/9f7698f3-5c36-4335-af98-fe088a250b2b/token
+  gateway_url: https://gateway.decapbridge.com
+
+# 2. Site UI
+logo_url: https://decapbridge.com/decapcms-with-bridge.svg
+site_url: https://lennexpo.github.io/mwiwa-borehole-drilling/
+
+# 3. Media (Where photos go)
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+# 4. Content (The actual form for Mwiwa)
+collections:
+  - name: "projects"
+    label: "Borehole Projects"
+    folder: "data/projects"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Project Title", name: "title", widget: "string" }
+      - { label: "Location", name: "location", widget: "string" }
+      - { label: "Project Photo", name: "image", widget: "image" }
+      - { label: "Description", name: "body", widget: "markdown" }
