@@ -243,41 +243,54 @@ document.addEventListener('DOMContentLoaded', () => {
 const repoOwner = 'lennexpo';
 const repoName = 'mwiwa-borehole-drilling';
 
+const repoOwner = 'lennexpo';
+const repoName = 'mwiwa-borehole-drilling';
+
 async function loadBoreholeProjects() {
-    const gallery = document.getElementById('project-gallery'); 
+    const gallery = document.getElementById('project-gallery');
     if (!gallery) return;
 
     try {
+        // 1. Fetch the project files from GitHub API
         const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/data/projects`);
         const files = await response.json();
 
-        // Clear any hardcoded "Loading..." text
-        gallery.innerHTML = '';
+        gallery.innerHTML = ''; // Clear the gallery
 
         for (const file of files) {
             if (file.name === '.gitkeep') continue;
 
+            // 2. Get the text inside the .md file
             const contentRes = await fetch(file.download_url);
             const text = await contentRes.text();
 
-            // This part extracts the Title and Image from the CMS file
+            // 3. Extract Title and Image Path
             const titleMatch = text.match(/title:\s*"(.*)"/);
             const imageMatch = text.match(/image:\s*"(.*)"/);
             
-            const title = titleMatch ? titleMatch[1] : "Mwiwa Project";
-            const image = imageMatch ? imageMatch[1] : "img1.jpeg";
+            const title = titleMatch ? titleMatch[1] : "Borehole Project";
+            let imagePath = imageMatch ? imageMatch[1] : "";
 
-            // Create the HTML for the card
+            // FIX: If Decap CMS saved the path as "/images/uploads/img.jpg", 
+            // we remove the first "/" so it works on GitHub Pages
+            if (imagePath.startsWith('/')) {
+                imagePath = imagePath.substring(1);
+            }
+
+            // 4. Build the Card
             const card = `
                 <div class="project-card">
-                    <img src="${image}" alt="${title}" style="width:100%">
-                    <h3>${title}</h3>
+                    <img src="${imagePath}" alt="${title}" loading="lazy">
+                    <div class="card-content">
+                        <h3>${title}</h3>
+                    </div>
                 </div>
             `;
             gallery.innerHTML += card;
         }
     } catch (error) {
-        console.log("Waiting for first project to be added...");
+        console.error("CMS Load Error:", error);
+        gallery.innerHTML = '<p>Check back soon for new project updates!</p>';
     }
 }
 
