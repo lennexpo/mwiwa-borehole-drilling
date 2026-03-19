@@ -640,7 +640,6 @@
   <script>
   (function () {
 
-    /* Modal elements */
     var overlay  = document.getElementById('video-modal');
     var iframe   = document.getElementById('video-modal-iframe');
     var titleEl  = document.getElementById('video-modal-title');
@@ -648,92 +647,140 @@
     var ytLink   = document.getElementById('video-modal-yt-link');
     var closeBtn = document.getElementById('video-modal-close');
 
-    function openModal(videoId, title, meta) {
+    function openModal(id, title, meta) {
       titleEl.innerHTML  = title;
       metaEl.textContent = meta;
-      ytLink.href        = 'https://youtube.com/shorts/' + videoId;
-      iframe.src         = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0&playsinline=1';
+      ytLink.href = 'https://youtube.com/shorts/' + id;
+      iframe.src  = 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1';
       overlay.classList.add('is-open');
       document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
       overlay.classList.remove('is-open');
-      setTimeout(function () { iframe.src = ''; }, 320);
+      setTimeout(function(){ iframe.src = ''; }, 320);
       document.body.style.overflow = '';
     }
 
-    /* Click anywhere on a video card to open the modal */
-    document.addEventListener('click', function (e) {
-      var card = e.target.closest('.video-card[data-video-id]');
-      if (card) openModal(card.dataset.videoId, card.dataset.title, card.dataset.meta);
+    document.addEventListener('click', function(e) {
+      var c = e.target.closest('.video-card[data-video-id]');
+      if (c) openModal(c.dataset.videoId, c.dataset.title, c.dataset.meta);
     });
 
-    /* Keyboard support */
-    document.addEventListener('keydown', function (e) {
-      var card = e.target.closest('.video-card[data-video-id]');
-      if (card && (e.key === 'Enter' || e.key === ' ')) {
+    document.addEventListener('keydown', function(e) {
+      var c = e.target.closest('.video-card[data-video-id]');
+      if (c && (e.key==='Enter'||e.key===' ')) {
         e.preventDefault();
-        openModal(card.dataset.videoId, card.dataset.title, card.dataset.meta);
+        openModal(c.dataset.videoId, c.dataset.title, c.dataset.meta);
       }
-      if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeModal();
+      if (e.key==='Escape' && overlay.classList.contains('is-open')) closeModal();
     });
 
     closeBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+    overlay.addEventListener('click', function(e){ if(e.target===overlay) closeModal(); });
 
-    /* Load videos from videos.json and build the cards */
-    function buildCard(v) {
-      var div = document.createElement('div');
-      div.className = 'video-card';
-      div.dataset.videoId = v.id;
-      div.dataset.title   = v.title;
-      div.dataset.meta    = v.meta || '';
-      div.setAttribute('role', 'button');
-      div.setAttribute('tabindex', '0');
-      div.innerHTML =
-        '<div class="video-thumb">' +
-          '<img src="https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg" alt="' + v.title + '" onerror="this.style.display=\'none\'">' +
-          '<div class="ripple-wrap"><div class="ripple-v"></div><div class="ripple-v"></div><div class="ripple-v"></div></div>' +
-          '<div class="v-play-btn"><div class="v-play-arrow"></div></div>' +
-          '<div class="yt-badge"><div class="yt-dot"></div> YouTube</div>' +
-        '</div>' +
-        '<div class="video-card-body">' +
-          '<div class="video-card-title">' + v.title + '</div>' +
-          '<div class="video-card-meta">' + (v.meta || '') + '</div>' +
-        '</div>';
-      return div;
+    function makeVideoCard(v) {
+      var card = document.createElement('div');
+      card.className = 'video-card';
+      card.setAttribute('data-video-id', v.id);
+      card.setAttribute('data-title', v.title);
+      card.setAttribute('data-meta', v.meta || '');
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+
+      var thumb = document.createElement('div');
+      thumb.className = 'video-thumb';
+
+      var img = document.createElement('img');
+      img.src = 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg';
+      img.alt = v.title;
+      img.addEventListener('error', function(){ this.style.display='none'; });
+      thumb.appendChild(img);
+
+      var rw = document.createElement('div');
+      rw.className = 'ripple-wrap';
+      for(var i=0;i<3;i++){
+        var rv = document.createElement('div');
+        rv.className = 'ripple-v';
+        rw.appendChild(rv);
+      }
+      thumb.appendChild(rw);
+
+      var pb = document.createElement('div');
+      pb.className = 'v-play-btn';
+      var pa = document.createElement('div');
+      pa.className = 'v-play-arrow';
+      pb.appendChild(pa);
+      thumb.appendChild(pb);
+
+      var yb = document.createElement('div');
+      yb.className = 'yt-badge';
+      var yd = document.createElement('div');
+      yd.className = 'yt-dot';
+      yb.appendChild(yd);
+      yb.appendChild(document.createTextNode(' YouTube'));
+      thumb.appendChild(yb);
+
+      card.appendChild(thumb);
+
+      var body = document.createElement('div');
+      body.className = 'video-card-body';
+      var t = document.createElement('div');
+      t.className = 'video-card-title';
+      t.textContent = v.title;
+      var m = document.createElement('div');
+      m.className = 'video-card-meta';
+      m.textContent = v.meta || '';
+      body.appendChild(t);
+      body.appendChild(m);
+      card.appendChild(body);
+      return card;
     }
 
-    /* Load gallery images from gallery.json */
+    function makeGalleryItem(name) {
+      var item = document.createElement('div');
+      item.className = 'gallery-item';
+      var img = document.createElement('img');
+      img.src = name;
+      img.alt = 'Project photo';
+      img.loading = 'lazy';
+      item.appendChild(img);
+      var ov = document.createElement('div');
+      ov.className = 'gallery-overlay';
+      var sp = document.createElement('span');
+      sp.className = 'gallery-label';
+      sp.textContent = 'Project Photo';
+      ov.appendChild(sp);
+      item.appendChild(ov);
+      var z = document.createElement('div');
+      z.className = 'gallery-zoom';
+      z.textContent = '⤢';
+      item.appendChild(z);
+      return item;
+    }
+
     fetch('gallery.json?v=' + Date.now())
-      .then(function (r) { return r.json(); })
-      .then(function (names) {
-        var grid = document.getElementById('project-gallery');
-        if (!grid) return;
-        grid.innerHTML = '';
-        if (!names.length) return;
-        names.forEach(function (name) {
-          var div = document.createElement('div');
-          div.className = 'gallery-item';
-          div.innerHTML =
-            '<img src="' + name + '" alt="' + name + '" loading="lazy">' +
-            '<div class="gallery-overlay"><span class="gallery-label">Project Photo</span></div>' +
-            '<div class="gallery-zoom">⤢</div>';
-          grid.appendChild(div);
-        });
-        /* Re-trigger lightbox wiring if script.js uses it */
-        if (typeof initLightbox === 'function') initLightbox();
+      .then(function(r){ return r.json(); })
+      .then(function(names){
+        var g = document.getElementById('project-gallery');
+        if (!g) return;
+        g.innerHTML = '';
+        names.forEach(function(n){ g.appendChild(makeGalleryItem(n)); });
       })
-      .catch(function () {
-        console.info('gallery.json not found — upload it to your repo root.');
-      });
+      .catch(function(e){ console.warn('gallery error', e); });
 
     fetch('videos.json?v=' + Date.now())
-      .then(function (r) { return r.json(); })
-      .then(function (videos) {
-        var grid = document.getElementById('video-grid-dynamic');
-        if (!grid) return;
-        grid.innerHTML = '';
-        if (!videos.length) {
-          grid.innerHTML = '<p style="color:#3a4a68;font-size:13px;text-align:center;padding:40px 0;grid-column:1/-1">No videos added yet.</p>';
+      .then(function(r){ return r.json(); })
+      .then(function(videos){
+        var g = document.getElementById('video-grid-dynamic');
+        if (!g) return;
+        g.innerHTML = '';
+        videos.forEach(function(v){ g.appendChild(makeVideoCard(v)); });
+      })
+      .catch(function(e){ console.warn('videos error', e); });
+
+  })();
+  </script>
+
+</body>
+</html>
