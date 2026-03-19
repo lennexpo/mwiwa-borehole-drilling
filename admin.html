@@ -487,8 +487,9 @@
 <!-- ══ SCRIPT ════════════════════════════════════════════════ -->
 <script>
 const API   = 'https://api.github.com';
-const IMGS  = 'images';
-const VJSON = 'videos.json';
+const IMGS   = 'images';
+const VJSON  = 'videos.json';
+const GJSON  = 'gallery.json';
 const BRANCH = 'main';
 
 // ─ config ─────────────────────────────────────────────────
@@ -596,6 +597,27 @@ function renderImgs() {
     </div>`).join('');
 }
 
+async function syncGalleryJson(addedName, removedName) {
+  try {
+    // Read current gallery.json
+    const existing = await ghGet(GJSON);
+    let current = [];
+    if (existing?.content) {
+      current = JSON.parse(atob(existing.content.replace(/\n/g, '')));
+    }
+    // Add new image if provided
+    if (addedName && !current.includes(addedName)) {
+      current.push(addedName);
+    }
+    // Remove deleted image if provided
+    if (removedName) {
+      current = current.filter(n => n !== removedName);
+    }
+    const contentB64 = btoa(unescape(encodeURIComponent(JSON.stringify(current, null, 2))));
+    await ghPut(GJSON, contentB64, `Sync gallery.json (${current.length} image${current.length !== 1 ? 's' : ''})`, existing?.sha ?? null);
+  } catch (e) { console.warn('gallery.json sync failed:', e.message); }
+}
+
 async function uploadFiles(files) {
   const valid = [...files].filter(f => f.size <= 10 * 1024 * 1024);
   if (valid.length < files.length) toast(`${files.length - valid.length} file(s) skipped — over 10 MB limit.`, true);
@@ -611,8 +633,15 @@ async function uploadFiles(files) {
       ok++;
     } catch (e) { toast(`Failed: ${f.name} — ${e.message}`, true); }
   }
-  unload();
-  if (ok) { toast(`${ok} image${ok > 1 ? 's' : ''} uploaded!`); await loadGallery(); }
+  if (ok) {
+    load('Updating gallery on website…');
+    for (const f of valid) {
+      await syncGalleryJson('images/' + f.name, null);
+    }
+    unload();
+    toast(`${ok} image${ok > 1 ? 's' : ''} uploaded! Live in ~60 seconds.`);
+    await loadGallery();
+  } else { unload(); }
 }
 
 async function delImg(i) {
@@ -621,7 +650,10 @@ async function delImg(i) {
   load(`Deleting ${f.name}…`);
   try {
     await ghDelete(`${IMGS}/${f.name}`, f.sha, `Delete: ${f.name}`);
-    toast(`${f.name} deleted.`);
+    load('Updating gallery on website…');
+    await syncGalleryJson(null, 'images/' + f.name);
+    unload();
+    toast(`${f.name} deleted. Live in ~60 seconds.`);
     await loadGallery();
   } catch (e) { toast('Delete failed: ' + e.message, true); unload(); }
 }
