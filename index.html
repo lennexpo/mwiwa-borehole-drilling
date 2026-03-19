@@ -443,36 +443,8 @@
       </div>
       <a href="#contact" class="btn-ghost reveal" style="align-self:flex-end;">Start Your Project →</a>
     </div>
-    <div id="project-gallery" class="gallery-grid reveal">
-      <div class="gallery-item">
-        <img src="images/img3.jpeg" alt="Borehole water strike — rig in action" />
-        <div class="gallery-overlay">
-          <span class="gallery-label">Live Water Strike</span>
-        </div>
-        <div class="gallery-zoom">⤢</div>
-      </div>
-      <div class="gallery-item">
-        <img src="images/img4.jpeg" alt="Drilling crew and equipment" />
-        <div class="gallery-overlay">
-          <span class="gallery-label">Site Operations</span>
-        </div>
-        <div class="gallery-zoom">⤢</div>
-      </div>
-      <div class="gallery-item">
-        <img src="images/img1.jpeg" alt="Clean artesian water flowing" />
-        <div class="gallery-overlay">
-          <span class="gallery-label">Clean Water Result</span>
-        </div>
-        <div class="gallery-zoom">⤢</div>
-      </div>
-      <div class="gallery-item">
-        <img src="images/img4.jpeg" alt="Geophysical borehole siting survey" />
-        <div class="gallery-overlay">
-          <span class="gallery-label">Geophysical Survey</span>
-        </div>
-        <div class="gallery-zoom">⤢</div>
-      </div>
-    </div>
+    <!-- Gallery images loaded dynamically from gallery.json -->
+    <div id="project-gallery" class="gallery-grid reveal"></div>
   </section>
 
   <!-- ====== VIDEOS ====== -->
@@ -579,11 +551,11 @@
               <div class="contact-info-value">+263 777 092 746</div>
             </div>
           </a>
-          <a href="mailto:mwiwaboreholedrilling@gmail.com" class="contact-info-item">
+          <a href="/cdn-cgi/l/email-protection#2d405a445a4c4f425f4845424148495f44414144434a6d4a404c4441034e4240" class="contact-info-item">
             <div class="contact-info-icon">📧</div>
             <div>
               <div class="contact-info-label">Email</div>
-              <div class="contact-info-value">mwiwaboreholedrilling@gmail.com</div>
+              <div class="contact-info-value"><span class="__cf_email__" data-cfemail="600d17091701020f1205080f0c050412090c0c090e0720070d01090c4e030f0d">[email&#160;protected]</span></div>
             </div>
           </a>
           <a href="https://maps.google.com/?q=Kamfinsa+Harare+Zimbabwe" target="_blank" class="contact-info-item">
@@ -662,7 +634,7 @@
     </p>
   </footer>
 
-  <script src="script.js"></script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
 
   <!-- ====== VIDEO MODAL + DYNAMIC LOADER ====== -->
   <script>
@@ -733,6 +705,30 @@
       return div;
     }
 
+    /* Load gallery images from gallery.json */
+    fetch('gallery.json?v=' + Date.now())
+      .then(function (r) { return r.json(); })
+      .then(function (names) {
+        var grid = document.getElementById('project-gallery');
+        if (!grid) return;
+        grid.innerHTML = '';
+        if (!names.length) return;
+        names.forEach(function (name) {
+          var div = document.createElement('div');
+          div.className = 'gallery-item';
+          div.innerHTML =
+            '<img src="images/' + name + '" alt="' + name + '" loading="lazy">' +
+            '<div class="gallery-overlay"><span class="gallery-label">Project Photo</span></div>' +
+            '<div class="gallery-zoom">⤢</div>';
+          grid.appendChild(div);
+        });
+        /* Re-trigger lightbox wiring if script.js uses it */
+        if (typeof initLightbox === 'function') initLightbox();
+      })
+      .catch(function () {
+        console.info('gallery.json not found — upload it to your repo root.');
+      });
+
     fetch('videos.json?v=' + Date.now())
       .then(function (r) { return r.json(); })
       .then(function (videos) {
@@ -741,16 +737,3 @@
         grid.innerHTML = '';
         if (!videos.length) {
           grid.innerHTML = '<p style="color:#3a4a68;font-size:13px;text-align:center;padding:40px 0;grid-column:1/-1">No videos added yet.</p>';
-          return;
-        }
-        videos.forEach(function (v) { grid.appendChild(buildCard(v)); });
-      })
-      .catch(function () {
-        console.info('videos.json not found — upload it to your repo root.');
-      });
-
-  })();
-  </script>
-
-</body>
-</html>
