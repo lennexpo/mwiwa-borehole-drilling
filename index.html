@@ -8,8 +8,6 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
   <link rel="shortcut icon" href="favicon.svg"/>
   <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
-  <link rel="shortcut icon" href="favicon.svg"/>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <style>
@@ -211,12 +209,9 @@
             <div class="contact-info-icon">💬</div>
             <div><div class="contact-info-label">WhatsApp</div><div class="contact-info-value">+263 777 092 746</div></div>
           </a>
-       <a href="mailto:mwiwaboreholedrilling@gmail.com" target="_blank" class="contact-info-item">
+          <a href="mailto:mwiwaboreholedrilling@gmail.com" class="contact-info-item">
             <div class="contact-info-icon">📧</div>
-            <div>
-              <div class="contact-info-label">Email</div>
-              <div class="contact-info-value" id="mwiwa-email"></div>
-            </div>
+            <div><div class="contact-info-label">Email</div><div class="contact-info-value" id="mwiwa-email"></div></div>
           </a>
           <a href="https://maps.google.com/?q=Kamfinsa+Harare+Zimbabwe" target="_blank" class="contact-info-item">
             <div class="contact-info-icon">📍</div>
@@ -269,50 +264,27 @@
     <p class="footer-copy">&copy; 2024 Mwiwa Borehole Drilling. All rights reserved. &nbsp;|&nbsp; Harare, Zimbabwe</p>
     <p class="footer-designer">Designed by <a href="https://invittco.com" target="_blank">Invitt Co</a></p>
   </footer>
-
   <script src="script.js"></script>
-
-
-  <!-- Web3Forms handler -->
   <script>
-  (function () {
-    var form = document.getElementById('contact-form');
-    if (!form) return;
-    form.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      var btn  = form.querySelector('.btn-submit');
-      var orig = btn.textContent;
-      btn.textContent = 'Sending…';
-      btn.disabled = true;
-      try {
-        var res  = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          body: new FormData(form)
-        });
-        var json = await res.json();
-        if (json.success) {
-          btn.textContent = "Sent! We'll be in touch.";
-          btn.style.background = '#25d366';
-          form.reset();
-        } else { throw new Error(json.message); }
-      } catch (err) {
-        btn.textContent = 'Failed — try again';
-        btn.style.background = '#cc0033';
-        btn.disabled = false;
-      }
-      setTimeout(function () {
-        btn.textContent = orig;
-        btn.style.background = '';
-        btn.disabled = false;
-      }, 6000);
+  (function(){
+    var e=document.getElementById("mwiwa-email");
+    if(e) e.textContent="mwiwaboreholedrilling"+"@"+"gmail.com";
+    var form=document.getElementById("contact-form");
+    if(!form) return;
+    form.addEventListener("submit",async function(ev){
+      ev.preventDefault();
+      var btn=form.querySelector(".btn-submit"),orig=btn.textContent;
+      btn.textContent="Sending…"; btn.disabled=true;
+      try{
+        var r=await fetch("https://api.web3forms.com/submit",{method:"POST",body:new FormData(form)});
+        var j=await r.json();
+        if(j.success){btn.textContent="Sent! We'll be in touch.";btn.style.background="#25d366";form.reset();}
+        else throw new Error(j.message);
+      }catch(err){btn.textContent="Failed — try again";btn.style.background="#cc0033";btn.disabled=false;}
+      setTimeout(function(){btn.textContent=orig;btn.style.background="";btn.disabled=false;},6000);
     });
-    // Build email via JS to avoid Cloudflare obfuscation
-    var el = document.getElementById('mwiwa-email');
-    if (el) el.textContent = 'mwiwaboreholedrilling' + '@' + 'gmail.com';
   })();
   </script>
-
-  <!-- ====== VIDEO MODAL + DYNAMIC LOADER ====== -->
   <script>
   (function(){
     var overlay=document.getElementById("video-modal");
@@ -384,9 +356,8 @@
       item.appendChild(z);
       return item;
     }
-
-    fetch('gallery.json?v=' + Date.now())
-      .then(function(r){ return r.json(); })
+    fetch("gallery.json?v="+Date.now())
+      .then(function(r){return r.json();})
       .then(function(names){
         var g=document.getElementById("project-gallery");
         if(!g) return;
@@ -397,5 +368,13 @@
     fetch("videos.json?v="+Date.now())
       .then(function(r){return r.json();})
       .then(function(videos){
-        var g = document.getElementById('video-grid-dynamic');
-        if (!g) return;
+        var g=document.getElementById("video-grid-dynamic");
+        if(!g) return;
+        g.innerHTML="";
+        videos.forEach(function(v){g.appendChild(makeVideoCard(v));});
+      })
+      .catch(function(e){console.warn("videos error",e);});
+  })();
+  </script>
+</body>
+</html>
