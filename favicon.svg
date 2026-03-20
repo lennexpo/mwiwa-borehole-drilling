@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Background rounded square -->
+  <rect width="64" height="64" rx="14" fill="#1565C0"/>
+
+  <!-- Water drop shape -->
+  <path d="M32 8 Q32 8 32 8 Q20 24 16 36 Q12 50 22 57 Q32 63 42 57 Q52 50 48 36 Q44 24 32 8Z" fill="rgba(255,255,255,0.15)"/>
+
+  <!-- Drop outline glow -->
+  <path d="M32 8 Q32 8 32 8 Q20 24 16 36 Q12 50 22 57 Q32 63 42 57 Q52 50 48 36 Q44 24 32 8Z" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+  <!-- Letter M -->
+  <text x="32" y="46" font-family="Georgia, serif" font-size="28" font-weight="700" fill="white" text-anchor="middle">M</text>
+
+  <!-- Shine highlight on drop -->
+  <ellipse cx="24" cy="30" rx="3.5" ry="5.5" fill="rgba(255,255,255,0.3)" transform="rotate(-20,24,30)"/>
+</svg>
