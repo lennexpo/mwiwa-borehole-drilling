@@ -6,6 +6,8 @@
   <meta name="description" content="Mwiwa Borehole Drilling — Professional borehole drilling, installation, pump & solar solutions in Harare, Zimbabwe." />
   <title>Mwiwa Borehole Drilling | Harare, Zimbabwe</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <link rel="shortcut icon" href="favicon.svg"/>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
@@ -552,14 +554,11 @@
               <div class="contact-info-value">+263 777 092 746</div>
             </div>
           </a>
-       <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mwiwaboreholedrilling1@gmail.com" target="_blank" class="contact-info-item">
+       <a href="mailto:mwiwaboreholedrilling@gmail.com" target="_blank" class="contact-info-item">
             <div class="contact-info-icon">📧</div>
             <div>
               <div class="contact-info-label">Email</div>
-             <div class="contact-info-value" id="mwiwa-email"></div>
-<script>
-  document.getElementById('mwiwa-email').textContent = 'mwiwaboreholedrilling' + '@' + 'gmail.com';
-</script>
+              <div class="contact-info-value" id="mwiwa-email"></div>
             </div>
           </a>
           <a href="https://maps.google.com/?q=Kamfinsa+Harare+Zimbabwe" target="_blank" class="contact-info-item">
@@ -641,7 +640,47 @@
     </p>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
+  <script src="script.js"></script>
+
+
+  <!-- Web3Forms handler -->
+  <script>
+  (function () {
+    var form = document.getElementById('contact-form');
+    if (!form) return;
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var btn  = form.querySelector('.btn-submit');
+      var orig = btn.textContent;
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
+      try {
+        var res  = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: new FormData(form)
+        });
+        var json = await res.json();
+        if (json.success) {
+          btn.textContent = "Sent! We'll be in touch.";
+          btn.style.background = '#25d366';
+          form.reset();
+        } else { throw new Error(json.message); }
+      } catch (err) {
+        btn.textContent = 'Failed — try again';
+        btn.style.background = '#cc0033';
+        btn.disabled = false;
+      }
+      setTimeout(function () {
+        btn.textContent = orig;
+        btn.style.background = '';
+        btn.disabled = false;
+      }, 6000);
+    });
+    // Build email via JS to avoid Cloudflare obfuscation
+    var el = document.getElementById('mwiwa-email');
+    if (el) el.textContent = 'mwiwaboreholedrilling' + '@' + 'gmail.com';
+  })();
+  </script>
 
   <!-- ====== VIDEO MODAL + DYNAMIC LOADER ====== -->
   <script>
@@ -765,47 +804,6 @@
       item.appendChild(z);
       return item;
     }
-
-    /* ── Web3Forms contact form ── */
-    (function () {
-      var form = document.getElementById('contact-form');
-      if (!form) return;
-
-      form.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        var btn  = form.querySelector('.btn-submit');
-        var orig = btn.textContent;
-
-        btn.textContent = 'Sending…';
-        btn.disabled = true;
-
-        try {
-          var res  = await fetch('https://api.web3forms.com/submit', {
-            method: 'POST',
-            body: new FormData(form)
-          });
-          var json = await res.json();
-
-          if (json.success) {
-            btn.textContent = 'Sent! We\'ll be in touch.';
-            btn.style.background = '#25d366';
-            form.reset();
-          } else {
-            throw new Error(json.message);
-          }
-        } catch (err) {
-          btn.textContent = 'Failed — try again';
-          btn.style.background = '#cc0033';
-          btn.disabled = false;
-        }
-
-        setTimeout(function () {
-          btn.textContent = orig;
-          btn.style.background = '';
-          btn.disabled = false;
-        }, 6000);
-      });
-    })();
 
     fetch('gallery.json?v=' + Date.now())
       .then(function(r){ return r.json(); })
