@@ -556,7 +556,7 @@
             <div class="contact-info-icon">📧</div>
             <div>
               <div class="contact-info-label">Email</div>
-              <div class="contact-info-value">mwiwaboreholedrilling1@gmail.com</div>
+              <div class="contact-info-value"><span class="__cf_email__" data-cfemail="f39e849a8492919c81969b9c9f9697819a9f9f9a9d94c2b3949e929a9fdd909c9e">[email&#160;protected]</span></div>
             </div>
           </a>
           <a href="https://maps.google.com/?q=Kamfinsa+Harare+Zimbabwe" target="_blank" class="contact-info-item">
@@ -573,6 +573,9 @@
         <h3>Request a Quote</h3>
         <p>Fill in the form and we'll get back to you within 24 hours.</p>
         <form id="contact-form" novalidate>
+          <input type="hidden" name="access_key" value="da6593fd-5fb4-45bc-8055-e697480ddb54"/>
+          <input type="hidden" name="subject" value="New Enquiry — Mwiwa Borehole Drilling"/>
+          <input type="hidden" name="from_name" value="Mwiwa Borehole Drilling Website"/>
           <div class="form-row">
             <div class="form-group">
               <label for="fname">First Name</label>
@@ -635,7 +638,7 @@
     </p>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="script.js"></script>
 
   <!-- ====== VIDEO MODAL + DYNAMIC LOADER ====== -->
   <script>
@@ -760,6 +763,47 @@
       return item;
     }
 
+    /* ── Web3Forms contact form ── */
+    (function () {
+      var form = document.getElementById('contact-form');
+      if (!form) return;
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var btn  = form.querySelector('.btn-submit');
+        var orig = btn.textContent;
+
+        btn.textContent = 'Sending…';
+        btn.disabled = true;
+
+        try {
+          var res  = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            body: new FormData(form)
+          });
+          var json = await res.json();
+
+          if (json.success) {
+            btn.textContent = 'Sent! We\'ll be in touch.';
+            btn.style.background = '#25d366';
+            form.reset();
+          } else {
+            throw new Error(json.message);
+          }
+        } catch (err) {
+          btn.textContent = 'Failed — try again';
+          btn.style.background = '#cc0033';
+          btn.disabled = false;
+        }
+
+        setTimeout(function () {
+          btn.textContent = orig;
+          btn.style.background = '';
+          btn.disabled = false;
+        }, 6000);
+      });
+    })();
+
     fetch('gallery.json?v=' + Date.now())
       .then(function(r){ return r.json(); })
       .then(function(names){
@@ -775,13 +819,3 @@
       .then(function(videos){
         var g = document.getElementById('video-grid-dynamic');
         if (!g) return;
-        g.innerHTML = '';
-        videos.forEach(function(v){ g.appendChild(makeVideoCard(v)); });
-      })
-      .catch(function(e){ console.warn('videos error', e); });
-
-  })();
-  </script>
-
-</body>
-</html>
