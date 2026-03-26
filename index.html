@@ -211,7 +211,9 @@
             <div><div class="contact-info-label">WhatsApp</div><div class="contact-info-value">+263 777 092 746</div></div>
           </a>
           <a href="mailto:mwiwaboreholedrilling@gmail.com" class="contact-info-item">
+          <a href="mailto:mwiwaboreholedrilling@gmail.com" class="contact-info-item">
             <div class="contact-info-icon">📧</div>
+            <div><div class="contact-info-label">Email</div><div class="contact-info-value" id="mwiwa-email"></div></div>
             <div><div class="contact-info-label">Email</div><div class="contact-info-value" id="mwiwa-email"></div></div>
           </a>
           <a href="https://maps.google.com/?q=Kamfinsa+Harare+Zimbabwe" target="_blank" class="contact-info-item">
@@ -267,6 +269,22 @@
   </footer>
   <script src="script.js"></script>
   <script>
+  (function(){
+    var e=document.getElementById("mwiwa-email");
+    if(e) e.textContent="mwiwaboreholedrilling"+"@"+"gmail.com";
+    var form=document.getElementById("contact-form");
+    if(!form) return;
+    form.addEventListener("submit",async function(ev){
+      ev.preventDefault();
+      var btn=form.querySelector(".btn-submit"),orig=btn.textContent;
+      btn.textContent="Sending…"; btn.disabled=true;
+      try{
+        var r=await fetch("https://api.web3forms.com/submit",{method:"POST",body:new FormData(form)});
+        var j=await r.json();
+        if(j.success){btn.textContent="Sent! We'll be in touch.";btn.style.background="#25d366";form.reset();}
+        else throw new Error(j.message);
+      }catch(err){btn.textContent="Failed — try again";btn.style.background="#cc0033";btn.disabled=false;}
+      setTimeout(function(){btn.textContent=orig;btn.style.background="";btn.disabled=false;},6000);
   (function(){
     var e=document.getElementById("mwiwa-email");
     if(e) e.textContent="mwiwaboreholedrilling"+"@"+"gmail.com";
@@ -357,6 +375,8 @@
       item.appendChild(z);
       return item;
     }
+    fetch("gallery.json?v="+Date.now())
+      .then(function(r){return r.json();})
     fetch("gallery.json?v="+Date.now())
       .then(function(r){return r.json();})
       .then(function(names){
