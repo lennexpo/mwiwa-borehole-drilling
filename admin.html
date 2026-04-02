@@ -1,763 +1,468 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mwiwa — Media Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Media Dashboard — Mwiwa Borehole Drilling</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #050c1a;
-      --surface:   #0b1427;
-      --surface2:  #0e1a30;
-      --border:    #1a2840;
-      --border2:   #1e2d47;
-      --blue:      #1d6bff;
-      --blue-h:    #2d7bff;
-      --text:      #dce6f8;
-      --muted:     #5a6a88;
-      --muted2:    #3a4a68;
-      --red:       #ff4d4d;
-      --green:     #22c55e;
+      --bg: #0a0f1a;
+      --surface: #111827;
+      --surface2: #1a2335;
+      --border: #1e2d45;
+      --blue: #2389DA;
+      --blue-dim: #1a6db0;
+      --red: #ef4444;
+      --red-dim: #991b1b;
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --radius: 10px;
     }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      font-size: 14px;
-      line-height: 1.5;
-    }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
 
-    /* ── TOAST ─────────────────────────────────────────── */
-    #toast-wrap {
-      position: fixed; top: 18px; right: 18px; z-index: 9999;
-      display: flex; flex-direction: column; gap: 8px;
-      pointer-events: none;
-    }
-    .toast {
-      background: var(--surface);
-      border: 0.5px solid var(--border2);
-      border-left: 3px solid var(--green);
-      border-radius: 8px;
-      padding: 11px 16px;
-      font-size: 13px;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.45);
-      animation: tIn .28s ease;
-      min-width: 220px;
-    }
-    .toast.err { border-left-color: var(--red); }
-    @keyframes tIn  { from { opacity:0; transform:translateX(16px); } to { opacity:1; transform:none; } }
-    @keyframes tOut { from { opacity:1; transform:none; } to { opacity:0; transform:translateX(16px); } }
+    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .logo-box { width: 38px; height: 38px; background: var(--blue); border-radius: 8px; display: grid; place-items: center; font-weight: 800; font-size: 18px; }
+    .header-title h1 { font-size: 15px; font-weight: 700; }
+    .header-title p { font-size: 12px; color: var(--muted); }
 
-    /* ── LOADING ────────────────────────────────────────── */
-    #loading {
-      position: fixed; inset: 0; z-index: 800;
-      background: rgba(5,12,26,.82);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 14px;
-    }
-    #loading.off { display: none; }
-    .spin {
-      width: 34px; height: 34px;
-      border: 2.5px solid var(--border2);
-      border-top-color: var(--blue);
-      border-radius: 50%;
-      animation: spin .65s linear infinite;
-    }
-    @keyframes spin { to { transform:rotate(360deg); } }
-    #loading-msg { font-size: 13px; color: var(--muted); }
+    .setup-overlay { position: fixed; inset: 0; background: rgba(10,15,26,0.96); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 999; }
+    .setup-overlay.hidden { display: none; }
+    .setup-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 100%; max-width: 480px; text-align: center; }
+    .setup-card .icon { width: 56px; height: 56px; background: var(--blue); border-radius: 14px; display: grid; place-items: center; margin: 0 auto 20px; font-size: 28px; }
+    .setup-card h2 { font-size: 22px; margin-bottom: 8px; }
+    .setup-card p { color: var(--muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+    .setup-card a { color: var(--blue); }
 
-    /* ── SETUP OVERLAY ──────────────────────────────────── */
-    #setup-overlay {
-      position: fixed; inset: 0; z-index: 700;
-      background: var(--bg);
-      display: flex; align-items: center; justify-content: center;
-      padding: 20px;
-    }
-    #setup-overlay.off { display: none; }
+    .input-group { margin-bottom: 16px; text-align: left; }
+    .input-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .input-group input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--text); font-size: 14px; }
+    .input-group input:focus { outline: none; border-color: var(--blue); }
 
-    .setup-card {
-      background: var(--surface);
-      border: 0.5px solid var(--border2);
-      border-radius: 16px;
-      padding: 38px 36px;
-      width: 100%; max-width: 420px;
-      box-shadow: 0 28px 64px rgba(0,0,0,.55);
-    }
-    .setup-brand {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 28px;
-    }
-    .lm {
-      width: 40px; height: 40px; border-radius: 10px;
-      background: var(--blue);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 18px;
-    }
-    .lm-text { font-size: 15px; font-weight: 600; }
-    .lm-sub  { font-size: 11px; color: var(--muted); }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover { background: var(--blue-dim); }
+    .btn-danger  { background: var(--red); color: #fff; }
+    .btn-danger:hover  { background: var(--red-dim); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-full { width: 100%; justify-content: center; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
 
-    .setup-h { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
-    .setup-p { font-size: 13px; color: var(--muted); margin-bottom: 26px; line-height: 1.6; }
+    .main { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
 
-    .field        { margin-bottom: 15px; }
-    .field label  { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
-    .field input  {
-      width: 100%; padding: 10px 13px;
-      background: var(--surface2); border: 0.5px solid var(--border2);
-      border-radius: 8px; color: var(--text);
-      font-size: 13px; font-family: inherit; outline: none;
-      transition: border-color .2s;
-    }
-    .field input:focus { border-color: var(--blue); }
-    .field input::placeholder { color: var(--muted2); }
-    .field-hint   { font-size: 11px; color: var(--muted2); margin-top: 5px; }
-    .field-hint a { color: var(--blue); text-decoration: none; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 32px; border-bottom: 1px solid var(--border); }
+    .tab-btn { padding: 10px 20px; background: none; border: none; color: var(--muted); font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; display: flex; align-items: center; gap: 8px; }
+    .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+    .tab-count { background: var(--surface2); border-radius: 999px; padding: 1px 8px; font-size: 11px; color: var(--muted); }
+    .tab-btn.active .tab-count { background: rgba(35,137,218,0.15); color: var(--blue); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
 
-    .btn-primary {
-      width: 100%; padding: 12px;
-      background: var(--blue); border: none; border-radius: 8px;
-      color: #fff; font-size: 14px; font-weight: 600;
-      cursor: pointer; font-family: inherit;
-      transition: background .2s, transform .15s;
-      margin-top: 4px;
-    }
-    .btn-primary:hover { background: var(--blue-h); transform: translateY(-1px); }
-    .btn-primary:active { transform: none; }
+    .section-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .section-sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
 
-    /* ── TOPBAR ─────────────────────────────────────────── */
-    .topbar {
-      background: var(--surface);
-      border-bottom: 0.5px solid var(--border);
-      height: 54px; padding: 0 22px;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 100;
-    }
-    .topbar-left  { display: flex; align-items: center; gap: 11px; }
-    .topbar-lm    { width: 30px; height: 30px; border-radius: 7px; background: var(--blue); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
-    .topbar-title { font-size: 14px; font-weight: 600; }
-    .topbar-sub   { font-size: 11px; color: var(--muted); }
-    .topbar-right { display: flex; align-items: center; gap: 9px; }
+    .drop-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 48px 24px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 24px; position: relative; }
+    .drop-zone:hover, .drop-zone.dragover { border-color: var(--blue); background: rgba(35,137,218,0.04); }
+    .drop-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .drop-zone .drop-icon { font-size: 40px; margin-bottom: 12px; }
+    .drop-zone h3 { font-size: 16px; margin-bottom: 6px; }
+    .drop-zone p { color: var(--muted); font-size: 13px; }
+    .hl { color: var(--blue); }
 
-    .repo-badge {
-      background: var(--surface2); border: 0.5px solid var(--border2);
-      border-radius: 6px; padding: 4px 10px;
-      font-size: 11px; color: var(--muted);
-      display: flex; align-items: center; gap: 5px;
-    }
-    .repo-badge b { color: var(--text); font-weight: 500; }
+    .queue-item { display: flex; align-items: center; gap: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; }
+    .queue-thumb { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+    .queue-info { flex: 1; min-width: 0; }
+    .queue-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .queue-size { font-size: 11px; color: var(--muted); }
+    .queue-status { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+    .status-pending   { background: rgba(245,158,11,0.1); color: var(--warning); }
+    .status-uploading { background: rgba(35,137,218,0.1); color: var(--blue); }
+    .status-done      { background: rgba(34,197,94,0.1);  color: var(--success); }
+    .status-error     { background: rgba(239,68,68,0.1);  color: var(--red); }
 
-    .icon-btn {
-      width: 30px; height: 30px; border-radius: 7px;
-      background: var(--surface2); border: 0.5px solid var(--border2);
-      color: var(--muted); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 15px; transition: all .2s;
-    }
-    .icon-btn:hover { background: rgba(29,107,255,.14); color: var(--blue); border-color: rgba(29,107,255,.3); }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+    .gallery-card { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--surface2); border: 1px solid var(--border); aspect-ratio: 4/3; }
+    .gallery-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+    .gallery-card:hover img { transform: scale(1.05); }
+    .gallery-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+    .gallery-card:hover .gallery-overlay { opacity: 1; }
 
-    /* ── MAIN ───────────────────────────────────────────── */
-    #main-dash { display: none; flex-direction: column; min-height: 100vh; }
-    #main-dash.on { display: flex; }
+    .video-form { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 28px; }
+    .video-form h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+    .form-row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+    .form-row .input-group { flex: 1; min-width: 180px; margin-bottom: 0; }
+    .form-row .input-group input { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--text); font-size: 14px; font-family: inherit; width: 100%; }
 
-    /* ── TABS ───────────────────────────────────────────── */
-    .tabs {
-      background: var(--surface);
-      border-bottom: 0.5px solid var(--border);
-      padding: 0 22px;
-      display: flex;
-    }
-    .tab {
-      padding: 14px 16px;
-      background: none; border: none; border-bottom: 2px solid transparent;
-      color: var(--muted); font-size: 13px; font-weight: 500;
-      cursor: pointer; font-family: inherit;
-      display: flex; align-items: center; gap: 7px;
-      transition: color .2s, border-color .2s;
-    }
-    .tab.on { color: var(--blue); border-bottom-color: var(--blue); }
-    .tab:not(.on):hover { color: var(--text); }
+    .video-list { display: flex; flex-direction: column; gap: 12px; }
+    .video-item { display: flex; align-items: center; gap: 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+    .video-thumb { width: 100px; height: 56px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: var(--bg); }
+    .video-info { flex: 1; min-width: 0; }
+    .video-title-t { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .video-url-t { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .badge {
-      background: var(--surface2); border: 0.5px solid var(--border2);
-      border-radius: 10px; padding: 1px 7px; font-size: 10px;
-    }
-    .tab.on .badge { background: rgba(29,107,255,.15); border-color: rgba(29,107,255,.3); color: var(--blue); }
+    .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .empty .empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .empty p { font-size: 14px; }
 
-    /* ── PANEL ──────────────────────────────────────────── */
-    .content { padding: 26px 22px; max-width: 1060px; }
-    .panel { display: none; }
-    .panel.on { display: block; }
+    .loading-state { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 48px; color: var(--muted); font-size: 14px; }
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .panel-head { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
-    .panel-head h2 { font-size: 16px; font-weight: 600; margin-bottom: 2px; }
-    .panel-head p  { font-size: 12px; color: var(--muted); }
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    .toast { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-size: 13px; min-width: 260px; display: flex; align-items: center; gap: 10px; animation: slideIn 0.2s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+    .toast.success { border-color: var(--success); }
+    .toast.error   { border-color: var(--red); }
+    @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    /* ── UPLOAD ZONE ────────────────────────────────────── */
-    .drop-zone {
-      border: 1.5px dashed var(--border2);
-      border-radius: 12px; padding: 32px 20px;
-      text-align: center; cursor: pointer;
-      transition: border-color .2s, background .2s;
-      margin-bottom: 22px; position: relative;
-    }
-    .drop-zone:hover, .drop-zone.drag { border-color: var(--blue); background: rgba(29,107,255,.04); }
-    .drop-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .dz-icon  { font-size: 26px; margin-bottom: 8px; }
-    .dz-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
-    .dz-sub   { font-size: 12px; color: var(--muted); }
-    .dz-sub span { color: var(--blue); }
-
-    /* ── IMAGE GRID ─────────────────────────────────────── */
-    .img-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
-      gap: 10px;
-    }
-    .img-item {
-      background: var(--surface2); border: 0.5px solid var(--border);
-      border-radius: 10px; overflow: hidden;
-      aspect-ratio: 4/3; position: relative;
-    }
-    .img-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .img-overlay {
-      position: absolute; inset: 0;
-      background: rgba(4,9,20,.75);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 8px;
-      opacity: 0; transition: opacity .2s;
-    }
-    .img-item:hover .img-overlay { opacity: 1; }
-    .img-name { font-size: 10px; color: rgba(255,255,255,.7); text-align: center; padding: 0 8px; word-break: break-all; line-height: 1.4; }
-    .btn-del {
-      background: rgba(255,77,77,.15); border: 0.5px solid rgba(255,77,77,.4);
-      border-radius: 6px; padding: 5px 12px;
-      color: #ff7070; font-size: 11px; font-weight: 500;
-      cursor: pointer; font-family: inherit; transition: background .2s;
-    }
-    .btn-del:hover { background: rgba(255,77,77,.3); }
-
-    /* ── VIDEO SECTION ──────────────────────────────────── */
-    .add-card {
-      background: var(--surface); border: 0.5px solid var(--border2);
-      border-radius: 12px; padding: 20px; margin-bottom: 20px;
-    }
-    .add-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-    .add-card p  { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
-    .add-card code { color: #6ea8ff; font-size: 11px; background: rgba(29,107,255,.1); padding: 1px 5px; border-radius: 3px; }
-
-    .add-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 10px; align-items: end;
-    }
-    @media (max-width: 580px) { .add-row { grid-template-columns: 1fr; } }
-
-    .fi { display: flex; flex-direction: column; gap: 5px; }
-    .fi label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
-    .fi input {
-      padding: 9px 12px;
-      background: var(--surface2); border: 0.5px solid var(--border2);
-      border-radius: 8px; color: var(--text); font-size: 13px;
-      font-family: inherit; outline: none; transition: border-color .2s;
-    }
-    .fi input:focus { border-color: var(--blue); }
-    .fi input::placeholder { color: var(--muted2); }
-
-    .btn-add {
-      padding: 9px 18px; height: 38px;
-      background: var(--blue); border: none; border-radius: 8px;
-      color: #fff; font-size: 13px; font-weight: 600;
-      cursor: pointer; white-space: nowrap; font-family: inherit;
-      transition: background .2s;
-    }
-    .btn-add:hover { background: var(--blue-h); }
-
-    /* ── VIDEO LIST ─────────────────────────────────────── */
-    .vid-list { display: flex; flex-direction: column; gap: 8px; }
-    .vid-item {
-      background: var(--surface); border: 0.5px solid var(--border);
-      border-radius: 10px;
-      display: flex; align-items: center; gap: 12px;
-      padding: 10px 14px;
-      transition: border-color .2s;
-    }
-    .vid-item:hover { border-color: var(--border2); }
-    .vid-thumb { width: 58px; height: 33px; border-radius: 6px; object-fit: cover; background: var(--surface2); flex-shrink: 0; }
-    .vid-info  { flex: 1; min-width: 0; }
-    .vid-title { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .vid-meta  { font-size: 11px; color: var(--muted); margin-top: 1px; }
-    .vid-id    { font-size: 10px; color: var(--muted2); font-family: monospace; }
-    .btn-rm {
-      background: none; border: 0.5px solid transparent;
-      border-radius: 6px; padding: 5px 10px;
-      color: var(--muted2); font-size: 11px; cursor: pointer;
-      font-family: inherit; flex-shrink: 0; transition: all .2s;
-    }
-    .btn-rm:hover { background: rgba(255,77,77,.1); border-color: rgba(255,77,77,.3); color: #ff7070; }
-
-    /* ── SAVE BAR ───────────────────────────────────────── */
-    .save-bar {
-      background: var(--surface); border: 0.5px solid var(--border2);
-      border-radius: 10px; padding: 13px 18px;
-      display: flex; align-items: center; justify-content: space-between;
-      margin-top: 18px; gap: 12px; flex-wrap: wrap;
-    }
-    .save-bar-txt { font-size: 12px; color: var(--muted); }
-    .save-bar-txt strong { color: var(--text); }
-
-    .btn-save {
-      padding: 9px 22px;
-      background: var(--blue); border: none; border-radius: 8px;
-      color: #fff; font-size: 13px; font-weight: 600;
-      cursor: pointer; font-family: inherit;
-      display: flex; align-items: center; gap: 7px;
-      transition: background .2s, transform .15s;
-    }
-    .btn-save:hover { background: var(--blue-h); transform: translateY(-1px); }
-    .btn-save:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-
-    /* ── EMPTY STATE ────────────────────────────────────── */
-    .empty {
-      text-align: center; padding: 44px 20px;
-      color: var(--muted);
-    }
-    .empty-icon  { font-size: 34px; margin-bottom: 10px; opacity: .45; }
-    .empty-title { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
-    .empty-sub   { font-size: 12px; color: var(--muted2); }
-
-    /* ── UPLOAD PROGRESS ITEM ───────────────────────────── */
-    .img-item.pending img { opacity: .35; }
-    .img-item .spin-wrap {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .spin-sm {
-      width: 20px; height: 20px;
-      border: 2px solid rgba(255,255,255,.15);
-      border-top-color: var(--blue);
-      border-radius: 50%;
-      animation: spin .6s linear infinite;
-    }
+    .settings-btn { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--muted); font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
+    .settings-btn:hover { border-color: var(--blue); color: var(--text); }
   </style>
 </head>
 <body>
 
-<!-- TOAST -->
-<div id="toast-wrap"></div>
-
-<!-- LOADING -->
-<div id="loading" class="off">
-  <div class="spin"></div>
-  <div id="loading-msg">Working…</div>
-</div>
-
-<!-- ══ SETUP OVERLAY ══════════════════════════════════════════ -->
-<div id="setup-overlay">
+<div class="setup-overlay" id="setupOverlay">
   <div class="setup-card">
-    <div class="setup-brand">
-      <div class="lm">M</div>
-      <div>
-        <div class="lm-text">Mwiwa Borehole Drilling</div>
-        <div class="lm-sub">Media Admin Dashboard</div>
-      </div>
+    <div class="icon">🔑</div>
+    <h2>Connect to GitHub</h2>
+    <p>
+      Enter your GitHub Personal Access Token to manage media.<br/>
+      Needs <strong>repo</strong> scope (classic token).<br/><br/>
+      <a href="https://github.com/settings/tokens/new?scopes=repo&description=Mwiwa+Admin" target="_blank">Generate a token here →</a>
+    </p>
+    <div class="input-group">
+      <label>GitHub Token</label>
+      <input type="password" id="patInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
     </div>
-    <div class="setup-h">Connect Your Website</div>
-    <div class="setup-p">Enter your GitHub details once to link this dashboard to your live website. Your token is saved only in this browser.</div>
-
-    <div class="field">
-      <label>GitHub Username</label>
-      <input type="text" id="s-owner" value="lennexpo" placeholder="e.g. lennexpo" />
-    </div>
-    <div class="field">
-      <label>Repository Name</label>
-      <input type="text" id="s-repo" placeholder="e.g. mwiwaboreholedrilling.co.zw" />
-      <div class="field-hint">The exact repo name as it appears on GitHub</div>
-    </div>
-    <div class="field">
-      <label>GitHub Personal Access Token</label>
-      <input type="password" id="s-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxx" />
-      <div class="field-hint">
-        <a href="https://github.com/settings/tokens/new?scopes=repo&description=Mwiwa+Admin" target="_blank">Click here to create a token</a> — tick the <strong>repo</strong> checkbox.
-      </div>
-    </div>
-
-    <button class="btn-primary" onclick="doSetup()">Connect Dashboard →</button>
+    <button class="btn btn-primary btn-full" id="connectBtn" onclick="saveToken()">Connect & Continue</button>
+    <p style="margin-top:14px;font-size:12px;color:var(--muted)">Saved only on this device. Never shared.</p>
   </div>
 </div>
 
-<!-- ══ MAIN DASHBOARD ════════════════════════════════════════ -->
-<div id="main-dash">
-
-  <!-- Topbar -->
-  <div class="topbar">
-    <div class="topbar-left">
-      <div class="topbar-lm">M</div>
-      <div>
-        <div class="topbar-title">Media Dashboard</div>
-        <div class="topbar-sub">Mwiwa Borehole Drilling</div>
-      </div>
-    </div>
-    <div class="topbar-right">
-      <div class="repo-badge">
-        <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8Z"/></svg>
-        <b id="repo-display">—</b>
-      </div>
-      <div class="icon-btn" title="Reconfigure" onclick="showSetup()">⚙</div>
+<header class="header">
+  <div class="header-left">
+    <div class="logo-box">M</div>
+    <div class="header-title">
+      <h1>Media Dashboard</h1>
+      <p>Mwiwa Borehole Drilling</p>
     </div>
   </div>
+  <button class="settings-btn" onclick="showSettings()">⚙️ Change Token</button>
+</header>
 
-  <!-- Tabs -->
+<main class="main">
   <div class="tabs">
-    <button class="tab on" id="t-gallery" onclick="switchTab('gallery')">
-      🖼 Gallery <span class="badge" id="gc">0</span>
-    </button>
-    <button class="tab" id="t-videos" onclick="switchTab('videos')">
-      ▶ Videos <span class="badge" id="vc">0</span>
-    </button>
+    <button class="tab-btn active" onclick="switchTab(event,'gallery')">🖼️ Gallery <span class="tab-count" id="galleryCount">0</span></button>
+    <button class="tab-btn" onclick="switchTab(event,'videos')">▶️ Videos <span class="tab-count" id="videoCount">0</span></button>
   </div>
 
-  <!-- Content -->
-  <div class="content">
-
-    <!-- ── GALLERY PANEL ─────────────────────────────────── -->
-    <div class="panel on" id="p-gallery">
-      <div class="panel-head">
-        <div>
-          <h2>Gallery Images</h2>
-          <p>Upload new images or remove existing ones. Changes go live instantly.</p>
-        </div>
-      </div>
-
-      <div class="drop-zone" id="drop-zone">
-        <input type="file" id="file-input" accept="image/*" multiple />
-        <div class="dz-icon">📤</div>
-        <div class="dz-title">Drop images here or click to select</div>
-        <div class="dz-sub">JPG, PNG, WEBP · <span>Max 10 MB each</span></div>
-      </div>
-
-      <div class="img-grid" id="img-grid"></div>
+  <div class="tab-panel active" id="tab-gallery">
+    <p class="section-title">Gallery Images</p>
+    <p class="section-sub">Upload new images or remove existing ones. Changes go live on the site instantly.</p>
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" multiple accept="image/jpeg,image/png,image/webp" onchange="handleFiles(this.files)" />
+      <div class="drop-icon">📤</div>
+      <h3>Drop images here or click to select</h3>
+      <p>JPG, PNG, WEBP · Max 10 MB each · <span class="hl">Goes live instantly</span></p>
     </div>
-
-    <!-- ── VIDEOS PANEL ──────────────────────────────────── -->
-    <div class="panel" id="p-videos">
-      <div class="panel-head">
-        <div>
-          <h2>Video Library</h2>
-          <p>Add or remove YouTube videos shown on your website. Click Save &amp; Publish when done.</p>
-        </div>
-      </div>
-
-      <div class="add-card">
-        <h3>Add a New Video</h3>
-        <p>Paste the YouTube video ID — it's the part after <code>youtube.com/shorts/</code> or <code>watch?v=</code></p>
-        <div class="add-row">
-          <div class="fi">
-            <label>YouTube Video ID or URL</label>
-            <input type="text" id="v-id" placeholder="e.g. 0fD7XeGW37M" />
-          </div>
-          <div class="fi">
-            <label>Video Title</label>
-            <input type="text" id="v-title" placeholder="e.g. Borehole drilling in progress" />
-          </div>
-          <button class="btn-add" onclick="addVideo()">+ Add</button>
-        </div>
-      </div>
-
-      <div class="vid-list" id="vid-list"></div>
-
-      <div class="save-bar">
-        <div class="save-bar-txt"><strong id="vcount">0</strong> videos in library · unsaved changes are not published</div>
-        <button class="btn-save" id="save-btn" onclick="saveVideos()">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Save &amp; Publish
-        </button>
-      </div>
+    <div id="uploadQueue" style="margin-bottom:16px"></div>
+    <div id="galleryLoading" class="loading-state"><span class="spinner"></span> Loading gallery…</div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+    <div class="empty" id="galleryEmpty" style="display:none">
+      <div class="empty-icon">🖼️</div><p>No images yet. Upload some above.</p>
     </div>
-
   </div>
-</div>
 
-<!-- ══ SCRIPT ════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-videos">
+    <p class="section-title">Videos</p>
+    <p class="section-sub">Add YouTube video links to display on the site.</p>
+    <div class="video-form">
+      <h3>Add a YouTube Video</h3>
+      <div class="form-row">
+        <div class="input-group"><label>Video Title</label><input type="text" id="videoTitle" placeholder="Borehole Drilling in Harare" /></div>
+        <div class="input-group"><label>YouTube URL</label><input type="text" id="videoUrl" placeholder="https://youtube.com/watch?v=..." /></div>
+        <button class="btn btn-primary" onclick="addVideo()">Add Video</button>
+      </div>
+    </div>
+    <div id="videoLoading" class="loading-state"><span class="spinner"></span> Loading videos…</div>
+    <div class="video-list" id="videoList"></div>
+    <div class="empty" id="videoEmpty" style="display:none">
+      <div class="empty-icon">▶️</div><p>No videos yet. Add a YouTube link above.</p>
+    </div>
+  </div>
+</main>
+
+<div class="toast-container" id="toastContainer"></div>
+
 <script>
-const API   = 'https://api.github.com';
-const IMGS   = 'images';
-const VJSON  = 'videos.json';
-const GJSON  = 'gallery.json';
-const BRANCH = 'main';
+  const OWNER        = 'lennexpo';
+  const REPO         = 'mwiwa-borehole-drilling';
+  const BRANCH       = 'main';
+  const IMG_FOLDER   = 'images';        // existing images/ folder at root
+  const GALLERY_JSON = 'gallery.json';  // existing gallery.json at root
+  const VIDEOS_JSON  = 'videos.json';   // existing videos.json at root
 
-// ─ config ─────────────────────────────────────────────────
-const cfg = () => ({
-  token: localStorage.getItem('mw_tok') || '',
-  owner: localStorage.getItem('mw_own') || 'lennexpo',
-  repo:  localStorage.getItem('mw_rep') || ''
-});
-const saveCfg = (o, r, t) => {
-  localStorage.setItem('mw_own', o);
-  localStorage.setItem('mw_rep', r);
-  localStorage.setItem('mw_tok', t);
-};
+  let TOKEN = '';
+  let uploadQueue = [];
+  let galleryData = [];
+  let videos = [];
 
-// ─ ui helpers ─────────────────────────────────────────────
-const $ = id => document.getElementById(id);
-
-function toast(msg, err = false) {
-  const w = $('toast-wrap'), el = document.createElement('div');
-  el.className = 'toast' + (err ? ' err' : '');
-  el.textContent = (err ? '⚠ ' : '✓ ') + msg;
-  w.appendChild(el);
-  setTimeout(() => { el.style.animation = 'tOut .28s ease forwards'; setTimeout(() => el.remove(), 280); }, 3600);
-}
-function load(msg = 'Working…') { $('loading-msg').textContent = msg; $('loading').classList.remove('off'); }
-function unload() { $('loading').classList.add('off'); }
-
-// ─ github api ─────────────────────────────────────────────
-async function gh(method, path, body = null) {
-  const { token, owner, repo } = cfg();
-  const r = await fetch(`${API}/repos/${owner}/${repo}/contents/${path}`, {
-    method,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'Content-Type': 'application/json'
-    },
-    body: body ? JSON.stringify(body) : undefined
-  });
-  if (r.status === 404) return null;
-  if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.message || `GitHub ${r.status}`); }
-  return r.status === 204 ? null : r.json();
-}
-
-const ghList   = dir  => gh('GET', dir);
-const ghGet    = path => gh('GET', path);
-const ghPut    = (path, content, msg, sha = null) => gh('PUT', path, { message: msg, content, branch: BRANCH, ...(sha && { sha }) });
-const ghDelete = (path, sha, msg) => gh('DELETE', path, { message: msg, sha, branch: BRANCH });
-
-const toB64  = file => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.onerror = rej; r.readAsDataURL(file); });
-
-// ─ setup ──────────────────────────────────────────────────
-function doSetup() {
-  const o = $('s-owner').value.trim(), r = $('s-repo').value.trim(), t = $('s-token').value.trim();
-  if (!o || !r || !t) { toast('Please fill in all three fields.', true); return; }
-  saveCfg(o, r, t);
-  $('setup-overlay').classList.add('off');
-  init();
-}
-function showSetup() {
-  const c = cfg();
-  $('s-owner').value = c.owner; $('s-repo').value = c.repo; $('s-token').value = c.token;
-  $('setup-overlay').classList.remove('off');
-}
-
-// ─ tabs ───────────────────────────────────────────────────
-function switchTab(t) {
-  ['gallery','videos'].forEach(x => {
-    $('t-'+x).classList.toggle('on', x === t);
-    $('p-'+x).classList.toggle('on', x === t);
-  });
-}
-
-// ─ gallery ────────────────────────────────────────────────
-let imgs = [];
-
-async function loadGallery() {
-  load('Loading gallery…');
-  try {
-    const files = await ghList(IMGS) || [];
-    imgs = (Array.isArray(files) ? files : []).filter(f => /\.(jpe?g|png|webp|gif)$/i.test(f.name));
-    renderImgs();
-    $('gc').textContent = imgs.length;
-  } catch (e) { toast('Gallery load failed: ' + e.message, true); }
-  finally { unload(); }
-}
-
-function renderImgs() {
-  const g = $('img-grid');
-  if (!imgs.length) {
-    g.innerHTML = `<div class="empty" style="grid-column:1/-1">
-      <div class="empty-icon">🖼</div>
-      <div class="empty-title">No images yet</div>
-      <div class="empty-sub">Upload images using the zone above</div></div>`;
-    return;
+  /* ── Init ── */
+  function init() {
+    TOKEN = localStorage.getItem('mwiwa_gh_token') || '';
+    if (!TOKEN) { document.getElementById('setupOverlay').classList.remove('hidden'); }
+    else { document.getElementById('setupOverlay').classList.add('hidden'); loadGallery(); loadVideos(); }
   }
-  g.innerHTML = imgs.map((f, i) => `
-    <div class="img-item" id="ii-${i}">
-      <img src="${f.download_url}" alt="${f.name}" loading="lazy">
-      <div class="img-overlay">
-        <div class="img-name">${f.name}</div>
-        <button class="btn-del" onclick="delImg(${i})">🗑 Delete</button>
-      </div>
-    </div>`).join('');
-}
 
-async function syncGalleryJson(addedName, removedName) {
-  try {
-    // Read current gallery.json
-    const existing = await ghGet(GJSON);
-    let current = [];
-    if (existing?.content) {
-      current = JSON.parse(atob(existing.content.replace(/\n/g, '')));
-    }
-    // Add new image if provided
-    if (addedName && !current.includes(addedName)) {
-      current.push(addedName);
-    }
-    // Remove deleted image if provided
-    if (removedName) {
-      current = current.filter(n => n !== removedName);
-    }
-    const contentB64 = btoa(unescape(encodeURIComponent(JSON.stringify(current, null, 2))));
-    await ghPut(GJSON, contentB64, `Sync gallery.json (${current.length} image${current.length !== 1 ? 's' : ''})`, existing?.sha ?? null);
-  } catch (e) { console.warn('gallery.json sync failed:', e.message); }
-}
-
-async function uploadFiles(files) {
-  const valid = [...files].filter(f => f.size <= 10 * 1024 * 1024);
-  if (valid.length < files.length) toast(`${files.length - valid.length} file(s) skipped — over 10 MB limit.`, true);
-  if (!valid.length) return;
-  load(`Uploading ${valid.length} image${valid.length > 1 ? 's' : ''}…`);
-  let ok = 0;
-  for (const f of valid) {
+  async function saveToken() {
+    const val = document.getElementById('patInput').value.trim();
+    if (!val) return toast('Please enter your token', 'error');
+    const btn = document.getElementById('connectBtn');
+    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Verifying…';
     try {
-      const b64 = await toB64(f);
-      const path = `${IMGS}/${f.name}`;
-      const existing = await ghGet(path);
-      await ghPut(path, b64, `Upload: ${f.name}`, existing?.sha ?? null);
-      ok++;
-    } catch (e) { toast(`Failed: ${f.name} — ${e.message}`, true); }
+      const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}`, { headers: { Authorization: `token ${val}` } });
+      if (!r.ok) throw new Error('Invalid token or no repo access');
+      TOKEN = val; localStorage.setItem('mwiwa_gh_token', TOKEN);
+      document.getElementById('setupOverlay').classList.add('hidden');
+      loadGallery(); loadVideos(); toast('Connected ✓', 'success');
+    } catch (e) { toast(e.message, 'error'); }
+    finally { btn.disabled = false; btn.innerHTML = 'Connect & Continue'; }
   }
-  if (ok) {
-    load('Updating gallery on website…');
-    for (const f of valid) {
-      await syncGalleryJson('images/' + f.name, null);
+
+  function showSettings() { document.getElementById('patInput').value = TOKEN; document.getElementById('setupOverlay').classList.remove('hidden'); }
+
+  /* ── GitHub API ── */
+  async function apiGet(path) {
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+      headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (r.status === 404) return null;
+    if (!r.ok) throw new Error(`GitHub ${r.status}`);
+    return r.json();
+  }
+
+  async function apiPut(path, b64, message, sha = null) {
+    const body = { message, content: b64, branch: BRANCH };
+    if (sha) body.sha = sha;
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) { const e = await r.json(); throw new Error(e.message || `GitHub ${r.status}`); }
+    return r.json();
+  }
+
+  async function apiDelete(path, sha, message) {
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+      method: 'DELETE',
+      headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, sha, branch: BRANCH })
+    });
+    if (!r.ok) throw new Error(`Delete failed ${r.status}`);
+  }
+
+  function toBase64(file) {
+    return new Promise((res, rej) => { const rd = new FileReader(); rd.onload = () => res(rd.result.split(',')[1]); rd.onerror = rej; rd.readAsDataURL(file); });
+  }
+
+  function jsonToBase64(obj) { return btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2)))); }
+
+  async function readJson(path) {
+    const data = await apiGet(path);
+    if (!data) return { value: [], sha: null };
+    try { return { value: JSON.parse(atob(data.content.replace(/\n/g, ''))), sha: data.sha }; }
+    catch { return { value: [], sha: data.sha }; }
+  }
+
+  /* ── Gallery ── */
+  async function loadGallery() {
+    document.getElementById('galleryLoading').style.display = 'flex';
+    document.getElementById('galleryGrid').innerHTML = '';
+    document.getElementById('galleryEmpty').style.display = 'none';
+    try {
+      const { value } = await readJson(GALLERY_JSON);
+      galleryData = Array.isArray(value) ? value : [];
+      renderGallery();
+    } catch (e) { toast('Load failed: ' + e.message, 'error'); }
+    finally { document.getElementById('galleryLoading').style.display = 'none'; }
+    updateCounts();
+  }
+
+  function renderGallery() {
+    const grid = document.getElementById('galleryGrid');
+    grid.innerHTML = '';
+    if (!galleryData.length) { document.getElementById('galleryEmpty').style.display = 'block'; updateCounts(); return; }
+    document.getElementById('galleryEmpty').style.display = 'none';
+    galleryData.forEach(img => {
+      const card = document.createElement('div');
+      card.className = 'gallery-card';
+      card.innerHTML = `
+        <img src="${img.url}" alt="${img.name}" loading="lazy" />
+        <div class="gallery-overlay">
+          <button class="btn btn-danger btn-sm" onclick="deleteImage('${img.name}','${img.imgSha}')">🗑️ Delete</button>
+        </div>`;
+      grid.appendChild(card);
+    });
+    updateCounts();
+  }
+
+  async function deleteImage(name, imgSha) {
+    if (!confirm(`Delete "${name}"?`)) return;
+    try {
+      await apiDelete(`${IMG_FOLDER}/${name}`, imgSha, `Remove image: ${name}`);
+      const { value: entries, sha } = await readJson(GALLERY_JSON);
+      const updated = entries.filter(e => e.name !== name);
+      await apiPut(GALLERY_JSON, jsonToBase64(updated), 'Update gallery.json', sha);
+      galleryData = updated;
+      renderGallery();
+      toast(`Deleted ${name}`, 'success');
+    } catch (e) { toast('Delete failed: ' + e.message, 'error'); }
+  }
+
+  /* ── Upload ── */
+  const dropZone = document.getElementById('dropZone');
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+
+  function handleFiles(files) {
+    Array.from(files).forEach(file => {
+      if (file.size > 10 * 1024 * 1024) { toast(`${file.name} too large (max 10MB)`, 'error'); return; }
+      const id = Date.now() + Math.random();
+      uploadQueue.push({ id, file, status: 'pending', preview: URL.createObjectURL(file) });
+      renderQueueItem(uploadQueue[uploadQueue.length - 1]);
+    });
+    processQueue();
+  }
+
+  function renderQueueItem(item) {
+    const q = document.getElementById('uploadQueue');
+    const div = document.createElement('div');
+    div.className = 'queue-item'; div.id = `qi-${item.id}`;
+    div.innerHTML = `<img class="queue-thumb" src="${item.preview}" /><div class="queue-info"><div class="queue-name">${item.file.name}</div><div class="queue-size">${(item.file.size/1024).toFixed(0)} KB</div></div><span class="queue-status status-pending" id="qs-${item.id}">Queued</span>`;
+    q.appendChild(div);
+  }
+
+  function setStatus(id, cls, label) { const el = document.getElementById(`qs-${id}`); if (el) { el.className = `queue-status status-${cls}`; el.textContent = label; } }
+
+  async function processQueue() {
+    for (const item of uploadQueue) {
+      if (item.status !== 'pending') continue;
+      item.status = 'uploading'; setStatus(item.id, 'uploading', 'Uploading…');
+      try {
+        const b64 = await toBase64(item.file);
+        const safeName = `${Date.now()}-${item.file.name.replace(/[^a-zA-Z0-9._-]/g, '-')}`;
+        const filePath = `${IMG_FOLDER}/${safeName}`;
+
+        // 1. Upload image file
+        await apiPut(filePath, b64, `Add image: ${safeName}`);
+        const rawUrl = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${filePath}`;
+
+        // 2. Get file SHA (needed later for deletes)
+        const fileInfo = await apiGet(filePath);
+        const imgSha = fileInfo ? fileInfo.sha : '';
+
+        // 3. Update gallery.json
+        const { value: entries, sha } = await readJson(GALLERY_JSON);
+        const updated = Array.isArray(entries) ? entries : [];
+        updated.push({ name: safeName, url: rawUrl, imgSha });
+        await apiPut(GALLERY_JSON, jsonToBase64(updated), 'Update gallery.json', sha);
+
+        galleryData = updated;
+        item.status = 'done'; setStatus(item.id, 'done', '✓ Live');
+        toast(`Uploaded ${item.file.name}`, 'success');
+        renderGallery();
+      } catch (e) {
+        item.status = 'error'; setStatus(item.id, 'error', '✗ Failed');
+        toast('Upload failed: ' + e.message, 'error');
+      }
     }
-    unload();
-    toast(`${ok} image${ok > 1 ? 's' : ''} uploaded! Live in ~60 seconds.`);
-    await loadGallery();
-  } else { unload(); }
-}
-
-async function delImg(i) {
-  const f = imgs[i]; if (!f) return;
-  if (!confirm(`Delete "${f.name}"?\n\nThis cannot be undone.`)) return;
-  load(`Deleting ${f.name}…`);
-  try {
-    await ghDelete(`${IMGS}/${f.name}`, f.sha, `Delete: ${f.name}`);
-    load('Updating gallery on website…');
-    await syncGalleryJson(null, 'images/' + f.name);
-    unload();
-    toast(`${f.name} deleted. Live in ~60 seconds.`);
-    await loadGallery();
-  } catch (e) { toast('Delete failed: ' + e.message, true); unload(); }
-}
-
-function initDrop() {
-  const zone = $('drop-zone'), inp = $('file-input');
-  inp.addEventListener('change', () => inp.files.length && uploadFiles(inp.files));
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
-  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('drag'); e.dataTransfer.files.length && uploadFiles(e.dataTransfer.files); });
-}
-
-// ─ videos ─────────────────────────────────────────────────
-let vids = [], vsha = null;
-
-async function loadVideos() {
-  load('Loading videos…');
-  try {
-    const file = await ghGet(VJSON);
-    if (file?.content) {
-      vids = JSON.parse(atob(file.content.replace(/\n/g, '')));
-      vsha = file.sha;
-    } else { vids = []; vsha = null; }
-    renderVids();
-    $('vc').textContent = vids.length;
-    $('vcount').textContent = vids.length;
-  } catch (e) { toast('Videos load failed: ' + e.message, true); }
-  finally { unload(); }
-}
-
-function renderVids() {
-  $('vc').textContent = vids.length;
-  $('vcount').textContent = vids.length;
-  const list = $('vid-list');
-  if (!vids.length) {
-    list.innerHTML = `<div class="empty"><div class="empty-icon">▶</div><div class="empty-title">No videos added yet</div><div class="empty-sub">Use the form above to add your first YouTube video</div></div>`;
-    return;
+    setTimeout(() => {
+      uploadQueue = uploadQueue.filter(i => i.status !== 'done');
+      document.getElementById('uploadQueue').innerHTML = '';
+      uploadQueue.forEach(renderQueueItem);
+    }, 3000);
   }
-  list.innerHTML = vids.map((v, i) => `
-    <div class="vid-item">
-      <img class="vid-thumb" src="https://i.ytimg.com/vi/${v.id}/mqdefault.jpg" alt="" onerror="this.style.background='var(--surface2)'">
-      <div class="vid-info">
-        <div class="vid-title">${v.title || '(No title)'}</div>
-        <div class="vid-meta">${v.meta || ''}</div>
-        <div class="vid-id">${v.id}</div>
-      </div>
-      <button class="btn-rm" onclick="removeVid(${i})">✕ Remove</button>
-    </div>`).join('');
-}
 
-function addVideo() {
-  let id    = $('v-id').value.trim();
-  const title = $('v-title').value.trim();
-  if (!id)    { toast('Please enter a YouTube video ID or URL.', true); return; }
-  if (!title) { toast('Please enter a title for this video.', true); return; }
+  /* ── Videos ── */
+  async function loadVideos() {
+    document.getElementById('videoLoading').style.display = 'flex';
+    try {
+      const { value } = await readJson(VIDEOS_JSON);
+      videos = Array.isArray(value) ? value : [];
+      renderVideos();
+    } catch (e) { videos = []; renderVideos(); }
+    finally { document.getElementById('videoLoading').style.display = 'none'; }
+  }
 
-  // Accept full URLs — extract just the ID
-  const m = id.match(/(?:shorts\/|watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-  if (m) id = m[1];
+  function extractYTId(url) { const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([a-zA-Z0-9_-]{11})/); return m ? m[1] : null; }
 
-  if (vids.find(v => v.id === id)) { toast('That video is already in your list.', true); return; }
+  async function addVideo() {
+    const title = document.getElementById('videoTitle').value.trim();
+    const url   = document.getElementById('videoUrl').value.trim();
+    if (!title) return toast('Enter a title', 'error');
+    const id = extractYTId(url);
+    if (!id) return toast('Not a valid YouTube URL', 'error');
+    videos.push({ id, title, url });
+    try {
+      const { sha } = await readJson(VIDEOS_JSON);
+      await apiPut(VIDEOS_JSON, jsonToBase64(videos), 'Update videos.json', sha);
+      document.getElementById('videoTitle').value = '';
+      document.getElementById('videoUrl').value = '';
+      renderVideos(); toast(`Added: ${title}`, 'success');
+    } catch (e) { videos.pop(); toast('Save failed: ' + e.message, 'error'); }
+  }
 
-  vids.push({ id, title, meta: 'Watch on YouTube' });
-  $('v-id').value = ''; $('v-title').value = '';
-  renderVids();
-  toast('Video added — click Save & Publish to go live.');
-}
+  async function deleteVideo(i) {
+    const v = videos[i];
+    if (!confirm(`Remove "${v.title}"?`)) return;
+    videos.splice(i, 1);
+    try {
+      const { sha } = await readJson(VIDEOS_JSON);
+      await apiPut(VIDEOS_JSON, jsonToBase64(videos), 'Update videos.json', sha);
+      renderVideos(); toast('Video removed', 'success');
+    } catch (e) { videos.splice(i, 0, v); toast('Failed: ' + e.message, 'error'); }
+  }
 
-function removeVid(i) {
-  if (!confirm('Remove this video from your website?')) return;
-  vids.splice(i, 1);
-  renderVids();
-  toast('Removed — click Save & Publish to go live.');
-}
+  function renderVideos() {
+    const list = document.getElementById('videoList');
+    list.innerHTML = '';
+    if (!videos.length) { document.getElementById('videoEmpty').style.display = 'block'; updateCounts(); return; }
+    document.getElementById('videoEmpty').style.display = 'none';
+    videos.forEach((v, i) => {
+      const div = document.createElement('div'); div.className = 'video-item';
+      div.innerHTML = `<img class="video-thumb" src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" alt="${v.title}" /><div class="video-info"><div class="video-title-t">${v.title}</div><div class="video-url-t">${v.url}</div></div><button class="btn btn-danger btn-sm" onclick="deleteVideo(${i})">🗑️ Remove</button>`;
+      list.appendChild(div);
+    });
+    updateCounts();
+  }
 
-async function saveVideos() {
-  $('save-btn').disabled = true;
-  load('Publishing videos to your website…');
-  try {
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(vids, null, 2))));
-    const res = await ghPut(VJSON, content, `Update videos.json (${vids.length} video${vids.length !== 1 ? 's' : ''})`, vsha);
-    vsha = res?.content?.sha ?? vsha;
-    toast('Published! Your website will update in about 60 seconds.');
-  } catch (e) { toast('Save failed: ' + e.message, true); }
-  finally { unload(); $('save-btn').disabled = false; }
-}
+  /* ── Tabs ── */
+  function switchTab(e, tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    e.currentTarget.classList.add('active');
+    document.getElementById(`tab-${tab}`).classList.add('active');
+  }
 
-// ─ init ───────────────────────────────────────────────────
-async function init() {
-  const c = cfg();
-  if (!c.repo || !c.token) { showSetup(); return; }
-  $('main-dash').classList.add('on');
-  $('repo-display').textContent = `${c.owner}/${c.repo}`;
-  initDrop();
-  await loadGallery();
-  await loadVideos();
-}
+  function updateCounts() {
+    document.getElementById('galleryCount').textContent = galleryData.length;
+    document.getElementById('videoCount').textContent   = videos.length;
+  }
 
-// boot
-(function () {
-  const c = cfg();
-  if (!c.repo || !c.token) { /* setup overlay already visible */ }
-  else { $('setup-overlay').classList.add('off'); init(); }
-})();
+  function toast(msg, type = 'info') {
+    const el = document.createElement('div'); el.className = `toast ${type}`;
+    el.innerHTML = `<span>${type==='success'?'✅':type==='error'?'❌':'ℹ️'}</span> ${msg}`;
+    document.getElementById('toastContainer').appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+  }
+
+  init();
 </script>
 </body>
 </html>

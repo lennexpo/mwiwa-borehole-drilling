@@ -93,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
-        // Stagger children if present
         const children = entry.target.querySelectorAll('.reveal-child');
         children.forEach((child, i) => {
           setTimeout(() => child.classList.add('visible'), i * 120);
@@ -137,32 +136,40 @@ document.addEventListener('DOMContentLoaded', () => {
     counterObserver.observe(el);
   });
 
-  /* ---- Gallery Lightbox ---- */
+  /* ---- Lightbox Setup ---- */
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
 
-  document.querySelectorAll('.gallery-item').forEach(item => {
+  function openLightbox(src) {
+    if (!lightbox || !lightboxImg) return;
+    lightboxImg.src = src;
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function attachLightbox(item) {
     item.addEventListener('click', () => {
       const img = item.querySelector('img');
-      lightboxImg.src = img.src;
-      lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden';
+      if (img) openLightbox(img.src);
     });
-  });
+  }
+
+  // Attach to any gallery items already in the HTML (fallback)
+  document.querySelectorAll('.gallery-item').forEach(attachLightbox);
 
   document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
   lightbox?.addEventListener('click', (e) => {
     if (e.target === lightbox) closeLightbox();
   });
-
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeLightbox();
   });
-
-  function closeLightbox() {
-    lightbox.classList.remove('active');
-    document.body.style.overflow = '';
-  }
 
   /* ---- Form Submit ---- */
   const form = document.getElementById('contact-form');
@@ -236,5 +243,128 @@ document.addEventListener('DOMContentLoaded', () => {
       canvas.height = window.innerHeight;
     });
   }
+
+  /* ============================================================
+     GALLERY — reads from gallery.json (updated by admin.html)
+     Put this in your gallery HTML: <div id="gallery-grid"></div>
+  ============================================================ */
+  async function loadGallery() {
+    const grid = document.getElementById('gallery-grid');
+    if (!grid) return;
+
+    grid.innerHTML = `<p style="color:#888;grid-column:1/-1;text-align:center;padding:40px 0">Loading gallery…</p>`;
+
+    try {
+      // ?v= busts the cache so changes show immediately
+      const res = await fetch(`gallery.json?v=${Date.now()}`);
+      if (!res.ok) throw new Error('not found');
+      const images = await res.json();
+
+      grid.innerHTML = '';
+
+      if (!images.length) {
+        grid.innerHTML = `<p style="color:#888;grid-column:1/-1;text-align:center;padding:40px 0">No images yet.</p>`;
+        return;
+      }
+
+      images.forEach((img, index) => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.style.cssText = `opacity:0;transform:translateY(16px);transition:opacity .4s ease ${index * 0.06}s,transform .4s ease ${index * 0.06}s`;
+        item.innerHTML = `<img src="${img.url}" alt="Mwiwa Borehole Drilling project" loading="lazy" />`;
+        grid.appendChild(item);
+
+        // Fade in
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        }));
+
+        // Wire up lightbox
+        attachLightbox(item);
+
+        // Wire up cursor hover
+        item.addEventListener('mouseenter', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+          cursor.style.background = 'rgba(35,137,218,0.5)';
+          follower.style.transform = 'translate(-50%, -50%) scale(1.5)';
+        });
+        item.addEventListener('mouseleave', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+          cursor.style.background = '#2389DA';
+          follower.style.transform = 'translate(-50%, -50%) scale(1)';
+        });
+      });
+
+    } catch (e) {
+      grid.innerHTML = `<p style="color:#888;grid-column:1/-1;text-align:center;padding:40px 0">Gallery coming soon.</p>`;
+    }
+  }
+
+  /* ============================================================
+     VIDEOS — reads from videos.json (updated by admin.html)
+     Put this in your videos HTML: <div id="videos-grid"></div>
+  ============================================================ */
+  async function loadVideos() {
+    const grid = document.getElementById('videos-grid');
+    if (!grid) return;
+
+    grid.innerHTML = `<p style="color:#888;grid-column:1/-1;text-align:center;padding:40px 0">Loading videos…</p>`;
+
+    try {
+      const res = await fetch(`videos.json?v=${Date.now()}`);
+      if (!res.ok) throw new Error('not found');
+      const videos = await res.json();
+
+      grid.innerHTML = '';
+
+      if (!videos.length) {
+        grid.innerHTML = `<p style="color:#888;grid-column:1/-1;text-align:center;padding:40px 0">No videos yet.</p>`;
+        return;
+      }
+
+      videos.forEach((v, index) => {
+        const thumb = `https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`;
+        const item = document.createElement('div');
+        item.className = 'video-item';
+        item.style.cssText = `opacity:0;transform:translateY(16px);transition:opacity .4s ease ${index * 0.08}s,transform .4s ease ${index * 0.08}s;cursor:pointer`;
+        item.innerHTML = `
+          <div class="video-thumb-wrap" style="position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:8px;background:#111">
+            <img
+              src="${thumb}"
+              alt="${v.title}"
+              loading="lazy"
+              style="width:100%;height:100%;object-fit:cover;display:block"
+              onerror="this.src='https://img.youtube.com/vi/${v.id}/hqdefault.jpg'"
+            />
+            <div class="video-play-btn" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.35);transition:background .2s">
+              <div style="width:56px;height:56px;border-radius:50%;background:#2389DA;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(35,137,218,0.5)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+          </div>
+          <p class="video-title" style="margin-top:10px;font-size:14px;font-weight:600;color:#fff">${v.title}</p>
+        `;
+
+        item.addEventListener('click', () => window.open(`https://www.youtube.com/watch?v=${v.id}`, '_blank'));
+        item.querySelector('.video-play-btn').addEventListener('mouseenter', function() { this.style.background = 'rgba(0,0,0,0.55)'; });
+        item.querySelector('.video-play-btn').addEventListener('mouseleave', function() { this.style.background = 'rgba(0,0,0,0.35)'; });
+
+        grid.appendChild(item);
+
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        }));
+      });
+
+    } catch (e) {
+      grid.innerHTML = `<p style="color:#888;grid-column:1/-1;text-align:center;padding:40px 0">Videos coming soon.</p>`;
+    }
+  }
+
+  // Fire both loaders
+  loadGallery();
+  loadVideos();
 
 });
