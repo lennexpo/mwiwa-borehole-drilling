@@ -408,7 +408,8 @@
     }
     function makeGalleryItem(name){
       var item=document.createElement("div"); item.className="gallery-item";
-      var img=document.createElement("img"); img.src=name; img.alt="Project photo"; img.loading="lazy";
+      var src=typeof name==="string"?name:name.url;
+      var img=document.createElement("img"); img.src=src; img.alt="Project photo"; img.loading="lazy";
       item.appendChild(img);
       var ov=document.createElement("div"); ov.className="gallery-overlay";
       var sp=document.createElement("span"); sp.className="gallery-label"; sp.textContent="Project Photo";
