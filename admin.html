@@ -404,7 +404,7 @@
     finally { document.getElementById('videoLoading').style.display = 'none'; }
   }
 
-  function extractYTId(url) { const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([a-zA-Z0-9_-]{11})/); return m ? m[1] : null; }
+  function extractYTId(url) { const m = url.match(/(?:youtu\.be\/|(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/); return m ? m[1] : null; }
 
   async function addVideo() {
     const title = document.getElementById('videoTitle').value.trim();
