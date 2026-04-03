@@ -327,22 +327,6 @@
         else throw new Error(j.message);
       }catch(err){btn.textContent="Failed — try again";btn.style.background="#cc0033";btn.disabled=false;}
       setTimeout(function(){btn.textContent=orig;btn.style.background="";btn.disabled=false;},6000);
-  (function(){
-    var e=document.getElementById("mwiwa-email");
-    if(e) e.textContent="mwiwaboreholedrilling"+"@"+"gmail.com";
-    var form=document.getElementById("contact-form");
-    if(!form) return;
-    form.addEventListener("submit",async function(ev){
-      ev.preventDefault();
-      var btn=form.querySelector(".btn-submit"),orig=btn.textContent;
-      btn.textContent="Sending…"; btn.disabled=true;
-      try{
-        var r=await fetch("https://api.web3forms.com/submit",{method:"POST",body:new FormData(form)});
-        var j=await r.json();
-        if(j.success){btn.textContent="Sent! We'll be in touch.";btn.style.background="#25d366";form.reset();}
-        else throw new Error(j.message);
-      }catch(err){btn.textContent="Failed — try again";btn.style.background="#cc0033";btn.disabled=false;}
-      setTimeout(function(){btn.textContent=orig;btn.style.background="";btn.disabled=false;},6000);
     });
   })();
   </script>
