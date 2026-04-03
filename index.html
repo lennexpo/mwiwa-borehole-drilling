@@ -420,8 +420,6 @@
     }
     fetch("gallery.json?v="+Date.now())
       .then(function(r){return r.json();})
-    fetch("gallery.json?v="+Date.now())
-      .then(function(r){return r.json();})
       .then(function(names){
         var g=document.getElementById("project-gallery");
         if(!g) return;
@@ -433,4 +431,11 @@
       .then(function(r){return r.json();})
       .then(function(videos){
         var g=document.getElementById("video-grid-dynamic");
-        if(!g) r
+        if(!g) return;
+        g.innerHTML="";
+        if(!videos.length){g.innerHTML="<p style='color:#3a4a68;text-align:center;padding:40px;grid-column:1/-1'>No videos yet.</p>";return;}
+        videos.forEach(function(v){g.appendChild(makeVideoCard(v));});
+      })
+      .catch(function(e){console.warn("videos error",e);});
+  })();
+  </script>
