@@ -314,13 +314,17 @@
   async function deleteImage(name, imgSha) {
     if (!confirm(`Delete "${name}"?`)) return;
     try {
-      await apiDelete(`${IMG_FOLDER}/${name}`, imgSha, `Remove image: ${name}`);
+      try {
+        await apiDelete(`${IMG_FOLDER}/${name}`, imgSha, `Remove image: ${name}`);
+      } catch (fileErr) {
+        console.warn('File not in repo, removing from gallery.json anyway:', fileErr.message);
+      }
       const { value: entries, sha } = await readJson(GALLERY_JSON);
       const updated = entries.filter(e => e.name !== name);
       await apiPut(GALLERY_JSON, jsonToBase64(updated), 'Update gallery.json', sha);
       galleryData = updated;
       renderGallery();
-      toast(`Deleted ${name}`, 'success');
+      toast(`Removed ${name}`, 'success');
     } catch (e) { toast('Delete failed: ' + e.message, 'error'); }
   }
 
