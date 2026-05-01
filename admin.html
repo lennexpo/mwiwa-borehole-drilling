@@ -206,16 +206,16 @@
   const GALLERY_JSON = 'gallery.json';  // existing gallery.json at root
   const VIDEOS_JSON  = 'videos.json';   // existing videos.json at root
 
-  let TOKEN = '';
+  let TOKEN = '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';
   let uploadQueue = [];
   let galleryData = [];
   let videos = [];
 
   /* ── Init ── */
   function init() {
-    TOKEN = localStorage.getItem('mwiwa_gh_token') || '';
-    if (!TOKEN) { document.getElementById('setupOverlay').classList.remove('hidden'); }
-    else { document.getElementById('setupOverlay').classList.add('hidden'); loadGallery(); loadVideos(); }
+    document.getElementById('setupOverlay').classList.add('hidden');
+    loadGallery();
+    loadVideos();
   }
 
   async function saveToken() {
