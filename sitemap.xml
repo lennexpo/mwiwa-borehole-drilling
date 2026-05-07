@@ -1,63 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Homepage — highest priority -->
   <url>
-    <loc>https://www.mwiwaboreholedrilling.co.zw/</loc>
-    <lastmod>2026-04-15</lastmod>
+    <loc>https://mwiwaboreholedrilling.co.zw/</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
 
-  <!-- Services — second highest: most searched intent -->
   <url>
-    <loc>https://www.mwiwaboreholedrilling.co.zw/#services</loc>
-    <lastmod>2026-04-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- Contact — high conversion value -->
-  <url>
-    <loc>https://www.mwiwaboreholedrilling.co.zw/#contact</loc>
-    <lastmod>2026-04-15</lastmod>
+    <loc>https://mwiwaboreholedrilling.co.zw/about.html</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
-  <!-- About -->
   <url>
-    <loc>https://www.mwiwaboreholedrilling.co.zw/#about</loc>
-    <lastmod>2026-04-15</lastmod>
+    <loc>https://mwiwaboreholedrilling.co.zw/services.html</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://mwiwaboreholedrilling.co.zw/gallery.html</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
-  <!-- Why Us -->
   <url>
-    <loc>https://www.mwiwaboreholedrilling.co.zw/#why</loc>
-    <lastmod>2026-04-15</lastmod>
+    <loc>https://mwiwaboreholedrilling.co.zw/why-us.html</loc>
+    <lastmod>2025-01-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
 
-  <!-- Gallery -->
   <url>
-    <loc>https://www.mwiwaboreholedrilling.co.zw/#gallery</loc>
-    <lastmod>2026-04-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
-  <!-- Videos -->
-  <url>
-    <loc>https://www.mwiwaboreholedrilling.co.zw/#videos</loc>
-    <lastmod>2026-04-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://mwiwaboreholedrilling.co.zw/contact.html</loc>
+    <lastmod>2025-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
 
 </urlset>
