@@ -31,26 +31,12 @@
     .header-title h1 { font-size: 15px; font-weight: 700; }
     .header-title p { font-size: 12px; color: var(--muted); }
 
-    .setup-overlay { position: fixed; inset: 0; background: rgba(10,15,26,0.96); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 999; }
-    .setup-overlay.hidden { display: none; }
-    .setup-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 100%; max-width: 480px; text-align: center; }
-    .setup-card .icon { width: 56px; height: 56px; background: var(--blue); border-radius: 14px; display: grid; place-items: center; margin: 0 auto 20px; font-size: 28px; }
-    .setup-card h2 { font-size: 22px; margin-bottom: 8px; }
-    .setup-card p { color: var(--muted); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
-    .setup-card a { color: var(--blue); }
-
-    .input-group { margin-bottom: 16px; text-align: left; }
-    .input-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
-    .input-group input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--text); font-size: 14px; }
-    .input-group input:focus { outline: none; border-color: var(--blue); }
-
     .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
     .btn-primary { background: var(--blue); color: #fff; }
     .btn-primary:hover { background: var(--blue-dim); }
     .btn-danger  { background: var(--red); color: #fff; }
     .btn-danger:hover  { background: var(--red-dim); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-full { width: 100%; justify-content: center; }
     .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
 
     .main { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
@@ -75,7 +61,8 @@
     .hl { color: var(--blue); }
 
     .queue-item { display: flex; align-items: center; gap: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; }
-    .queue-thumb { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+    .queue-thumb { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: var(--bg); display: grid; place-items: center; font-size: 22px; }
+    .queue-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 6px; }
     .queue-info { flex: 1; min-width: 0; }
     .queue-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .queue-size { font-size: 11px; color: var(--muted); }
@@ -92,18 +79,14 @@
     .gallery-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
     .gallery-card:hover .gallery-overlay { opacity: 1; }
 
-    .video-form { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 28px; }
-    .video-form h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
-    .form-row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
-    .form-row .input-group { flex: 1; min-width: 180px; margin-bottom: 0; }
-    .form-row .input-group input { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--text); font-size: 14px; font-family: inherit; width: 100%; }
+    .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .video-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .video-card video { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; background: #000; }
+    .video-card-info { padding: 12px 14px; display: flex; align-items: center; gap: 8px; }
+    .video-card-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+    .video-card-size { font-size: 11px; color: var(--muted); flex-shrink: 0; }
 
-    .video-list { display: flex; flex-direction: column; gap: 12px; }
-    .video-item { display: flex; align-items: center; gap: 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
-    .video-thumb { width: 100px; height: 56px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: var(--bg); }
-    .video-info { flex: 1; min-width: 0; }
-    .video-title-t { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-    .video-url-t { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .size-note { font-size: 12px; color: var(--warning); background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); border-radius: 8px; padding: 10px 14px; margin-bottom: 20px; }
 
     .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
     .empty .empty-icon { font-size: 48px; margin-bottom: 12px; }
@@ -118,30 +101,9 @@
     .toast.success { border-color: var(--success); }
     .toast.error   { border-color: var(--red); }
     @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-    .settings-btn { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--muted); font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
-    .settings-btn:hover { border-color: var(--blue); color: var(--text); }
   </style>
 </head>
 <body>
-
-<div class="setup-overlay" id="setupOverlay">
-  <div class="setup-card">
-    <div class="icon">🔑</div>
-    <h2>Connect to GitHub</h2>
-    <p>
-      Enter your GitHub Personal Access Token to manage media.<br/>
-      Needs <strong>repo</strong> scope (classic token).<br/><br/>
-      <a href="https://github.com/settings/tokens/new?scopes=repo&description=Mwiwa+Admin" target="_blank">Generate a token here →</a>
-    </p>
-    <div class="input-group">
-      <label>GitHub Token</label>
-      <input type="password" id="patInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
-    </div>
-    <button class="btn btn-primary btn-full" id="connectBtn" onclick="saveToken()">Connect & Continue</button>
-    <p style="margin-top:14px;font-size:12px;color:var(--muted)">Saved only on this device. Never shared.</p>
-  </div>
-</div>
 
 <header class="header">
   <div class="header-left">
@@ -151,48 +113,45 @@
       <p>Mwiwa Borehole Drilling</p>
     </div>
   </div>
-  <button class="settings-btn" onclick="showSettings()">⚙️ Change Token</button>
 </header>
 
 <main class="main">
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab(event,'gallery')">🖼️ Gallery <span class="tab-count" id="galleryCount">0</span></button>
+    <button class="tab-btn active" onclick="switchTab(event,'gallery')">🖼️ Images <span class="tab-count" id="galleryCount">0</span></button>
     <button class="tab-btn" onclick="switchTab(event,'videos')">▶️ Videos <span class="tab-count" id="videoCount">0</span></button>
   </div>
 
+  <!-- IMAGES -->
   <div class="tab-panel active" id="tab-gallery">
     <p class="section-title">Gallery Images</p>
     <p class="section-sub">Upload new images or remove existing ones. Changes go live on the site instantly.</p>
-    <div class="drop-zone" id="dropZone">
-      <input type="file" id="fileInput" multiple accept="image/jpeg,image/png,image/webp" onchange="handleFiles(this.files)" />
+    <div class="drop-zone" id="imgDropZone">
+      <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif" onchange="handleImages(this.files)" />
       <div class="drop-icon">📤</div>
-      <h3>Drop images here or click to select</h3>
+      <h3>Drop images here or <span class="hl">click to select</span></h3>
       <p>JPG, PNG, WEBP · Max 10 MB each · <span class="hl">Goes live instantly</span></p>
     </div>
-    <div id="uploadQueue" style="margin-bottom:16px"></div>
+    <div id="imgQueue" style="margin-bottom:16px"></div>
     <div id="galleryLoading" class="loading-state"><span class="spinner"></span> Loading gallery…</div>
     <div class="gallery-grid" id="galleryGrid"></div>
-    <div class="empty" id="galleryEmpty" style="display:none">
-      <div class="empty-icon">🖼️</div><p>No images yet. Upload some above.</p>
-    </div>
+    <div class="empty" id="galleryEmpty" style="display:none"><div class="empty-icon">🖼️</div><p>No images yet. Upload some above.</p></div>
   </div>
 
+  <!-- VIDEOS -->
   <div class="tab-panel" id="tab-videos">
     <p class="section-title">Videos</p>
-    <p class="section-sub">Add YouTube video links to display on the site.</p>
-    <div class="video-form">
-      <h3>Add a YouTube Video</h3>
-      <div class="form-row">
-        <div class="input-group"><label>Video Title</label><input type="text" id="videoTitle" placeholder="Borehole Drilling in Harare" /></div>
-        <div class="input-group"><label>YouTube URL</label><input type="text" id="videoUrl" placeholder="https://youtube.com/watch?v=..." /></div>
-        <button class="btn btn-primary" onclick="addVideo()">Add Video</button>
-      </div>
+    <p class="section-sub">Upload video files to display on the site. Stored directly in the repository.</p>
+    <div class="size-note">⚠️ Max 50 MB per video. For larger files, compress before uploading.</div>
+    <div class="drop-zone" id="vidDropZone">
+      <input type="file" multiple accept="video/mp4,video/webm,video/quicktime" onchange="handleVideos(this.files)" />
+      <div class="drop-icon">🎬</div>
+      <h3>Drop videos here or <span class="hl">click to select</span></h3>
+      <p>MP4, WEBM, MOV · Max 50 MB each · <span class="hl">Goes live instantly</span></p>
     </div>
+    <div id="vidQueue" style="margin-bottom:16px"></div>
     <div id="videoLoading" class="loading-state"><span class="spinner"></span> Loading videos…</div>
-    <div class="video-list" id="videoList"></div>
-    <div class="empty" id="videoEmpty" style="display:none">
-      <div class="empty-icon">▶️</div><p>No videos yet. Add a YouTube link above.</p>
-    </div>
+    <div class="video-grid" id="videoGrid"></div>
+    <div class="empty" id="videoEmpty" style="display:none"><div class="empty-icon">▶️</div><p>No videos yet. Upload some above.</p></div>
   </div>
 </main>
 
@@ -202,271 +161,234 @@
   const OWNER        = 'lennexpo';
   const REPO         = 'mwiwa-borehole-drilling';
   const BRANCH       = 'main';
-  const IMG_FOLDER   = 'images';        // existing images/ folder at root
-  const GALLERY_JSON = 'gallery.json';  // existing gallery.json at root
-  const VIDEOS_JSON  = 'videos.json';   // existing videos.json at root
+  const IMG_FOLDER   = 'images';
+  const VID_FOLDER   = 'videos';
+  const GALLERY_JSON = 'gallery.json';
+  const VIDEOS_JSON  = 'videos.json';
+  const TOKEN        = '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';
 
-  let TOKEN = atob('Z2l0aHViX3BhdF8xMUIzSFlKQ1kwVjdQNmFxWmU5cndfV21HeXRmRlp5djB4Wkk5U1RxdEhpU1pSUzdHMzdDMGQ4dE5FTlJqendPRjY2RU5ONjJvc3hXbVJEZw==');
-  let uploadQueue = [];
-  let galleryData = [];
-  let videos = [];
-
-  /* ── Init ── */
-  function init() {
-    document.getElementById('setupOverlay').classList.add('hidden');
-    loadGallery();
-    loadVideos();
-  }
-
-  async function saveToken() {
-    const val = document.getElementById('patInput').value.trim();
-    if (!val) return toast('Please enter your token', 'error');
-    const btn = document.getElementById('connectBtn');
-    btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Verifying…';
-    try {
-      const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}`, { headers: { Authorization: `token ${val}` } });
-      if (!r.ok) throw new Error('Invalid token or no repo access');
-      TOKEN = val; localStorage.setItem('mwiwa_gh_token', TOKEN);
-      document.getElementById('setupOverlay').classList.add('hidden');
-      loadGallery(); loadVideos(); toast('Connected ✓', 'success');
-    } catch (e) { toast(e.message, 'error'); }
-    finally { btn.disabled = false; btn.innerHTML = 'Connect & Continue'; }
-  }
-
-  function showSettings() { document.getElementById('patInput').value = TOKEN; document.getElementById('setupOverlay').classList.remove('hidden'); }
+  let imgQueue = [], vidQueue = [], galleryData = [], videosData = [];
+  const ghH = { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json' };
 
   /* ── GitHub API ── */
   async function apiGet(path) {
-    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
-      headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json' }
-    });
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, { headers: ghH });
     if (r.status === 404) return null;
     if (!r.ok) throw new Error(`GitHub ${r.status}`);
     return r.json();
   }
-
   async function apiPut(path, b64, message, sha = null) {
     const body = { message, content: b64, branch: BRANCH };
     if (sha) body.sha = sha;
     const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
-      method: 'PUT',
-      headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      method: 'PUT', headers: { ...ghH, 'Content-Type': 'application/json' }, body: JSON.stringify(body)
     });
     if (!r.ok) { const e = await r.json(); throw new Error(e.message || `GitHub ${r.status}`); }
     return r.json();
   }
-
   async function apiDelete(path, sha, message) {
     const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
-      method: 'DELETE',
-      headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      method: 'DELETE', headers: { ...ghH, 'Content-Type': 'application/json' },
       body: JSON.stringify({ message, sha, branch: BRANCH })
     });
     if (!r.ok) throw new Error(`Delete failed ${r.status}`);
   }
-
   function toBase64(file) {
     return new Promise((res, rej) => { const rd = new FileReader(); rd.onload = () => res(rd.result.split(',')[1]); rd.onerror = rej; rd.readAsDataURL(file); });
   }
-
   function jsonToBase64(obj) { return btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2)))); }
-
   async function readJson(path) {
     const data = await apiGet(path);
     if (!data) return { value: [], sha: null };
     try { return { value: JSON.parse(atob(data.content.replace(/\n/g, ''))), sha: data.sha }; }
     catch { return { value: [], sha: data.sha }; }
   }
-
-  /* ── Gallery ── */
-  async function loadGallery() {
-    document.getElementById('galleryLoading').style.display = 'flex';
-    document.getElementById('galleryGrid').innerHTML = '';
-    document.getElementById('galleryEmpty').style.display = 'none';
-    try {
-      const { value } = await readJson(GALLERY_JSON);
-      galleryData = Array.isArray(value) ? value : [];
-      renderGallery();
-    } catch (e) { toast('Load failed: ' + e.message, 'error'); }
-    finally { document.getElementById('galleryLoading').style.display = 'none'; }
-    updateCounts();
+  function formatSize(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b/1024).toFixed(0) + ' KB';
+    return (b/1048576).toFixed(1) + ' MB';
   }
 
-  function renderGallery() {
-    const grid = document.getElementById('galleryGrid');
-    grid.innerHTML = '';
-    if (!galleryData.length) { document.getElementById('galleryEmpty').style.display = 'block'; updateCounts(); return; }
-    document.getElementById('galleryEmpty').style.display = 'none';
-    galleryData.forEach(img => {
-      const card = document.createElement('div');
-      card.className = 'gallery-card';
-      card.innerHTML = `
-        <img src="${img.url}" alt="${img.name}" loading="lazy" />
-        <div class="gallery-overlay">
-          <button class="btn btn-danger btn-sm" onclick="deleteImage('${img.name}','${img.imgSha}')">🗑️ Delete</button>
-        </div>`;
-      grid.appendChild(card);
-    });
-    updateCounts();
-  }
-
-  async function deleteImage(name, imgSha) {
-    if (!confirm(`Delete "${name}"?`)) return;
-    try {
-      try {
-        await apiDelete(`${IMG_FOLDER}/${name}`, imgSha, `Remove image: ${name}`);
-      } catch (fileErr) {
-        console.warn('File not in repo, removing from gallery.json anyway:', fileErr.message);
-      }
-      const { value: entries, sha } = await readJson(GALLERY_JSON);
-      const updated = entries.filter(e => e.name !== name);
-      await apiPut(GALLERY_JSON, jsonToBase64(updated), 'Update gallery.json', sha);
-      galleryData = updated;
-      renderGallery();
-      toast(`Removed ${name}`, 'success');
-    } catch (e) { toast('Delete failed: ' + e.message, 'error'); }
-  }
-
-  /* ── Upload ── */
-  const dropZone = document.getElementById('dropZone');
-  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
-
-  function handleFiles(files) {
-    Array.from(files).forEach(file => {
-      if (file.size > 10 * 1024 * 1024) { toast(`${file.name} too large (max 10MB)`, 'error'); return; }
-      const id = Date.now() + Math.random();
-      uploadQueue.push({ id, file, status: 'pending', preview: URL.createObjectURL(file) });
-      renderQueueItem(uploadQueue[uploadQueue.length - 1]);
-    });
-    processQueue();
-  }
-
-  function renderQueueItem(item) {
-    const q = document.getElementById('uploadQueue');
+  /* ── Queue renderer ── */
+  function addToQueue(item, queueId, emoji) {
+    const q = document.getElementById(queueId);
     const div = document.createElement('div');
     div.className = 'queue-item'; div.id = `qi-${item.id}`;
-    div.innerHTML = `<img class="queue-thumb" src="${item.preview}" /><div class="queue-info"><div class="queue-name">${item.file.name}</div><div class="queue-size">${(item.file.size/1024).toFixed(0)} KB</div></div><span class="queue-status status-pending" id="qs-${item.id}">Queued</span>`;
+    div.innerHTML = `<div class="queue-thumb">${emoji}</div><div class="queue-info"><div class="queue-name">${item.file.name}</div><div class="queue-size">${formatSize(item.file.size)}</div></div><span class="queue-status status-pending" id="qs-${item.id}">Queued</span>`;
     q.appendChild(div);
   }
+  function setStatus(id, cls, label) {
+    const el = document.getElementById(`qs-${id}`);
+    if (el) { el.className = `queue-status status-${cls}`; el.textContent = label; }
+  }
+  function clearDoneQueue(queue, queueId, emoji) {
+    setTimeout(() => {
+      queue.splice(0, queue.length, ...queue.filter(i => i.status !== 'done'));
+      document.getElementById(queueId).innerHTML = '';
+      queue.forEach(i => addToQueue(i, queueId, emoji));
+    }, 3000);
+  }
 
-  function setStatus(id, cls, label) { const el = document.getElementById(`qs-${id}`); if (el) { el.className = `queue-status status-${cls}`; el.textContent = label; } }
+  /* ── Images ── */
+  const imgDrop = document.getElementById('imgDropZone');
+  imgDrop.addEventListener('dragover', e => { e.preventDefault(); imgDrop.classList.add('dragover'); });
+  imgDrop.addEventListener('dragleave', () => imgDrop.classList.remove('dragover'));
+  imgDrop.addEventListener('drop', e => { e.preventDefault(); imgDrop.classList.remove('dragover'); handleImages(e.dataTransfer.files); });
 
-  async function processQueue() {
-    for (const item of uploadQueue) {
+  function handleImages(files) {
+    Array.from(files).forEach(file => {
+      if (file.size > 10*1024*1024) { toast(`${file.name} exceeds 10 MB`, 'error'); return; }
+      const item = { id: Date.now()+Math.random(), file, status: 'pending' };
+      imgQueue.push(item); addToQueue(item, 'imgQueue', '🖼️');
+    });
+    processImages();
+  }
+  async function processImages() {
+    for (const item of imgQueue) {
       if (item.status !== 'pending') continue;
       item.status = 'uploading'; setStatus(item.id, 'uploading', 'Uploading…');
       try {
         const b64 = await toBase64(item.file);
-        const safeName = `${Date.now()}-${item.file.name.replace(/[^a-zA-Z0-9._-]/g, '-')}`;
-        const filePath = `${IMG_FOLDER}/${safeName}`;
-
-        // 1. Upload image file
-        await apiPut(filePath, b64, `Add image: ${safeName}`);
-        const rawUrl = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${filePath}`;
-
-        // 2. Get file SHA (needed later for deletes)
-        const fileInfo = await apiGet(filePath);
-        const imgSha = fileInfo ? fileInfo.sha : '';
-
-        // 3. Update gallery.json
-        const { value: entries, sha } = await readJson(GALLERY_JSON);
-        const updated = Array.isArray(entries) ? entries : [];
-        updated.push({ name: safeName, url: rawUrl, imgSha });
+        const name = `${Date.now()}-${item.file.name.replace(/[^a-zA-Z0-9._-]/g,'-')}`;
+        const path = `${IMG_FOLDER}/${name}`;
+        await apiPut(path, b64, `Add image: ${name}`);
+        const info = await apiGet(path);
+        const url = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${path}`;
+        const { value: arr, sha } = await readJson(GALLERY_JSON);
+        const updated = Array.isArray(arr) ? arr : [];
+        updated.push({ name, url, imgSha: info?.sha || '', size: item.file.size });
         await apiPut(GALLERY_JSON, jsonToBase64(updated), 'Update gallery.json', sha);
-
-        galleryData = updated;
-        item.status = 'done'; setStatus(item.id, 'done', '✓ Live');
-        toast(`Uploaded ${item.file.name}`, 'success');
-        renderGallery();
-      } catch (e) {
-        item.status = 'error'; setStatus(item.id, 'error', '✗ Failed');
-        toast('Upload failed: ' + e.message, 'error');
-      }
+        galleryData = updated; item.status = 'done'; setStatus(item.id, 'done', '✓ Live');
+        toast(`Uploaded ${item.file.name}`, 'success'); renderGallery();
+      } catch(e) { item.status = 'error'; setStatus(item.id, 'error', '✗ Failed'); toast('Upload failed: '+e.message, 'error'); }
     }
-    setTimeout(() => {
-      uploadQueue = uploadQueue.filter(i => i.status !== 'done');
-      document.getElementById('uploadQueue').innerHTML = '';
-      uploadQueue.forEach(renderQueueItem);
-    }, 3000);
+    clearDoneQueue(imgQueue, 'imgQueue', '🖼️');
   }
 
-  /* ── Videos ── */
-  async function loadVideos() {
-    document.getElementById('videoLoading').style.display = 'flex';
-    try {
-      const { value } = await readJson(VIDEOS_JSON);
-      videos = Array.isArray(value) ? value : [];
-      renderVideos();
-    } catch (e) { videos = []; renderVideos(); }
-    finally { document.getElementById('videoLoading').style.display = 'none'; }
+  async function loadGallery() {
+    document.getElementById('galleryLoading').style.display = 'flex';
+    try { const { value } = await readJson(GALLERY_JSON); galleryData = Array.isArray(value) ? value : []; renderGallery(); }
+    catch(e) { toast('Load failed: '+e.message, 'error'); }
+    finally { document.getElementById('galleryLoading').style.display = 'none'; }
   }
-
-  function extractYTId(url) { const m = url.match(/(?:youtu\.be\/|(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/))([a-zA-Z0-9_-]{11})/); return m ? m[1] : null; }
-
-  async function addVideo() {
-    const title = document.getElementById('videoTitle').value.trim();
-    const url   = document.getElementById('videoUrl').value.trim();
-    if (!title) return toast('Enter a title', 'error');
-    const id = extractYTId(url);
-    if (!id) return toast('Not a valid YouTube URL', 'error');
-    videos.push({ id, title, url });
-    try {
-      const { sha } = await readJson(VIDEOS_JSON);
-      await apiPut(VIDEOS_JSON, jsonToBase64(videos), 'Update videos.json', sha);
-      document.getElementById('videoTitle').value = '';
-      document.getElementById('videoUrl').value = '';
-      renderVideos(); toast(`Added: ${title}`, 'success');
-    } catch (e) { videos.pop(); toast('Save failed: ' + e.message, 'error'); }
-  }
-
-  async function deleteVideo(i) {
-    const v = videos[i];
-    if (!confirm(`Remove "${v.title}"?`)) return;
-    videos.splice(i, 1);
-    try {
-      const { sha } = await readJson(VIDEOS_JSON);
-      await apiPut(VIDEOS_JSON, jsonToBase64(videos), 'Update videos.json', sha);
-      renderVideos(); toast('Video removed', 'success');
-    } catch (e) { videos.splice(i, 0, v); toast('Failed: ' + e.message, 'error'); }
-  }
-
-  function renderVideos() {
-    const list = document.getElementById('videoList');
-    list.innerHTML = '';
-    if (!videos.length) { document.getElementById('videoEmpty').style.display = 'block'; updateCounts(); return; }
-    document.getElementById('videoEmpty').style.display = 'none';
-    videos.forEach((v, i) => {
-      const div = document.createElement('div'); div.className = 'video-item';
-      div.innerHTML = `<img class="video-thumb" src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" alt="${v.title}" /><div class="video-info"><div class="video-title-t">${v.title}</div><div class="video-url-t">${v.url}</div></div><button class="btn btn-danger btn-sm" onclick="deleteVideo(${i})">🗑️ Remove</button>`;
-      list.appendChild(div);
+  function renderGallery() {
+    const grid = document.getElementById('galleryGrid');
+    grid.innerHTML = '';
+    document.getElementById('galleryEmpty').style.display = galleryData.length ? 'none' : 'block';
+    galleryData.forEach(img => {
+      const c = document.createElement('div'); c.className = 'gallery-card';
+      c.innerHTML = `<img src="${img.url}" alt="${img.name}" loading="lazy"/><div class="gallery-overlay"><button class="btn btn-danger btn-sm" onclick="deleteImage('${img.name}','${img.imgSha}')">🗑️ Delete</button></div>`;
+      grid.appendChild(c);
     });
     updateCounts();
   }
+  async function deleteImage(name, imgSha) {
+    if (!confirm(`Delete "${name}"?`)) return;
+    try {
+      try { await apiDelete(`${IMG_FOLDER}/${name}`, imgSha, `Remove image: ${name}`); } catch {}
+      const { value: arr, sha } = await readJson(GALLERY_JSON);
+      const updated = arr.filter(e => e.name !== name);
+      await apiPut(GALLERY_JSON, jsonToBase64(updated), 'Update gallery.json', sha);
+      galleryData = updated; renderGallery(); toast(`Removed ${name}`, 'success');
+    } catch(e) { toast('Delete failed: '+e.message, 'error'); }
+  }
 
-  /* ── Tabs ── */
+  /* ── Videos ── */
+  const vidDrop = document.getElementById('vidDropZone');
+  vidDrop.addEventListener('dragover', e => { e.preventDefault(); vidDrop.classList.add('dragover'); });
+  vidDrop.addEventListener('dragleave', () => vidDrop.classList.remove('dragover'));
+  vidDrop.addEventListener('drop', e => { e.preventDefault(); vidDrop.classList.remove('dragover'); handleVideos(e.dataTransfer.files); });
+
+  function handleVideos(files) {
+    Array.from(files).forEach(file => {
+      if (file.size > 50*1024*1024) { toast(`${file.name} exceeds 50 MB`, 'error'); return; }
+      const item = { id: Date.now()+Math.random(), file, status: 'pending' };
+      vidQueue.push(item); addToQueue(item, 'vidQueue', '🎬');
+    });
+    processVideos();
+  }
+  async function processVideos() {
+    for (const item of vidQueue) {
+      if (item.status !== 'pending') continue;
+      item.status = 'uploading'; setStatus(item.id, 'uploading', 'Uploading…');
+      try {
+        const b64 = await toBase64(item.file);
+        const name = `${Date.now()}-${item.file.name.replace(/[^a-zA-Z0-9._-]/g,'-')}`;
+        const path = `${VID_FOLDER}/${name}`;
+        await apiPut(path, b64, `Add video: ${name}`);
+        const info = await apiGet(path);
+        const url = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${path}`;
+        const { value: arr, sha } = await readJson(VIDEOS_JSON);
+        const updated = Array.isArray(arr) ? arr : [];
+        updated.push({ name, url, vidSha: info?.sha || '', size: item.file.size });
+        await apiPut(VIDEOS_JSON, jsonToBase64(updated), 'Update videos.json', sha);
+        videosData = updated; item.status = 'done'; setStatus(item.id, 'done', '✓ Live');
+        toast(`Uploaded ${item.file.name}`, 'success'); renderVideos();
+      } catch(e) { item.status = 'error'; setStatus(item.id, 'error', '✗ Failed'); toast('Upload failed: '+e.message, 'error'); }
+    }
+    clearDoneQueue(vidQueue, 'vidQueue', '🎬');
+  }
+
+  async function loadVideos() {
+    document.getElementById('videoLoading').style.display = 'flex';
+    try {
+      const { value, sha } = await readJson(VIDEOS_JSON);
+      const all = Array.isArray(value) ? value : [];
+      // Filter out old YouTube-format entries (they have no vidSha / no proper name)
+      const valid = all.filter(v => v.vidSha !== undefined);
+      // If stale entries existed, wipe them from the repo now
+      if (valid.length !== all.length) {
+        await apiPut(VIDEOS_JSON, jsonToBase64(valid), 'Clear legacy YouTube entries', sha);
+      }
+      videosData = valid;
+      renderVideos();
+    }
+    catch { videosData = []; renderVideos(); }
+    finally { document.getElementById('videoLoading').style.display = 'none'; }
+  }
+  function renderVideos() {
+    const grid = document.getElementById('videoGrid');
+    grid.innerHTML = '';
+    document.getElementById('videoEmpty').style.display = videosData.length ? 'none' : 'block';
+    videosData.forEach((v, i) => {
+      const c = document.createElement('div'); c.className = 'video-card';
+      c.innerHTML = `<video src="${v.url}" controls preload="metadata"></video><div class="video-card-info"><span class="video-card-name" title="${v.name}">${v.name}</span><span class="video-card-size">${v.size ? formatSize(v.size) : ''}</span><button class="btn btn-danger btn-sm" onclick="deleteVideo(${i})">🗑️</button></div>`;
+      grid.appendChild(c);
+    });
+    updateCounts();
+  }
+  async function deleteVideo(i) {
+    const v = videosData[i];
+    if (!confirm(`Delete "${v.name}"?`)) return;
+    try {
+      try { await apiDelete(`${VID_FOLDER}/${v.name}`, v.vidSha, `Remove video: ${v.name}`); } catch {}
+      const { value: arr, sha } = await readJson(VIDEOS_JSON);
+      const updated = arr.filter(e => e.name !== v.name);
+      await apiPut(VIDEOS_JSON, jsonToBase64(updated), 'Update videos.json', sha);
+      videosData = updated; renderVideos(); toast('Video removed', 'success');
+    } catch(e) { toast('Failed: '+e.message, 'error'); }
+  }
+
+  /* ── Tabs & utils ── */
   function switchTab(e, tab) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     e.currentTarget.classList.add('active');
     document.getElementById(`tab-${tab}`).classList.add('active');
   }
-
   function updateCounts() {
     document.getElementById('galleryCount').textContent = galleryData.length;
-    document.getElementById('videoCount').textContent   = videos.length;
+    document.getElementById('videoCount').textContent   = videosData.length;
   }
-
-  function toast(msg, type = 'info') {
+  function toast(msg, type='info') {
     const el = document.createElement('div'); el.className = `toast ${type}`;
     el.innerHTML = `<span>${type==='success'?'✅':type==='error'?'❌':'ℹ️'}</span> ${msg}`;
     document.getElementById('toastContainer').appendChild(el);
     setTimeout(() => el.remove(), 4000);
   }
 
-  init();
+  loadGallery();
+  loadVideos();
 </script>
 </body>
 </html>

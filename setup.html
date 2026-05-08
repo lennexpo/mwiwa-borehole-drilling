@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mwiwa Repo Setup</title>
+  <style>
+    body { background: #0a0f1a; color: #f1f5f9; font-family: 'Segoe UI', system-ui, sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .card { background: #111827; border: 1px solid #1e2d45; border-radius: 12px; padding: 40px; max-width: 480px; width: 100%; }
+    h2 { margin-bottom: 8px; }
+    p { color: #64748b; font-size: 14px; margin-bottom: 28px; }
+    .btn { background: #2389DA; color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .log { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .log-line { font-size: 13px; display: flex; align-items: center; gap: 8px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #64748b; flex-shrink: 0; }
+    .dot.ok  { background: #22c55e; }
+    .dot.err { background: #ef4444; }
+    .dot.spin { animation: spin 0.6s linear infinite; border: 2px solid #2389DA; border-top-color: transparent; border-radius: 50%; background: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h2>Mwiwa Repo Setup</h2>
+  <p>Creates <code>gallery.json</code>, <code>videos.json</code>, and <code>videos/.gitkeep</code> in the repo. Run once only.</p>
+  <button class="btn" id="btn" onclick="run()">Run Setup</button>
+  <div class="log" id="log"></div>
+</div>
+<script>
+  const OWNER  = 'lennexpo';
+  const REPO   = 'mwiwa-borehole-drilling';
+  const BRANCH = 'main';
+  const TOKEN  = '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';
+
+  const FILES = [
+    { path: 'gallery.json', content: '[]',  message: 'Init gallery.json' },
+    { path: 'videos.json',  content: '[]',  message: 'Init videos.json'  },
+    { path: 'videos/.gitkeep', content: '', message: 'Create videos folder' },
+  ];
+
+  function b64(str) { return btoa(unescape(encodeURIComponent(str))); }
+
+  async function createFile(path, content, message) {
+    // Check if already exists
+    const check = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+      headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (check.ok) return 'exists';
+
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, content: b64(content), branch: BRANCH })
+    });
+    if (!r.ok) { const e = await r.json(); throw new Error(e.message); }
+    return 'created';
+  }
+
+  function addLine(text) {
+    const log = document.getElementById('log');
+    const div = document.createElement('div'); div.className = 'log-line';
+    const dot = document.createElement('div'); dot.className = 'dot spin';
+    const span = document.createElement('span'); span.textContent = text;
+    div.appendChild(dot); div.appendChild(span);
+    log.appendChild(div);
+    return dot;
+  }
+
+  async function run() {
+    const btn = document.getElementById('btn');
+    btn.disabled = true; btn.textContent = 'Running…';
+    document.getElementById('log').innerHTML = '';
+
+    for (const f of FILES) {
+      const dot = addLine(f.path);
+      try {
+        const result = await createFile(f.path, f.content, f.message);
+        dot.className = 'dot ok';
+        dot.nextSibling.textContent = f.path + (result === 'exists' ? ' — already exists ✓' : ' — created ✓');
+      } catch(e) {
+        dot.className = 'dot err';
+        dot.nextSibling.textContent = f.path + ' — ERROR: ' + e.message;
+      }
+    }
+
+    btn.textContent = 'Done — you can close this tab';
+  }
+</script>
+</body>
+</html>
