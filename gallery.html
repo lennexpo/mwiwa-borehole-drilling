@@ -184,6 +184,7 @@
     .video-modal__close:hover { background: var(--teal); color: white; border-color: var(--teal); }
     .video-modal__embed { position: relative; width: 100%; aspect-ratio: 16/9; background: #040a15; }
     .video-modal__embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+    .video-modal__embed video { position: absolute; inset: 0; width: 100%; height: 100%; border: none; outline: none; }
 
     /* CTA */
     .cta-section { background: linear-gradient(135deg, var(--teal) 0%, var(--navy-mid) 100%); text-align: center; padding: 80px 24px; }
@@ -511,62 +512,63 @@
         <button class="video-modal__close" id="vmClose"><i class="fas fa-times"></i></button>
       </div>
       <div class="video-modal__embed">
-        <iframe id="vmIframe" src="" title="Mwiwa Borehole Drilling video"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen></iframe>
+        <video id="vmVideo" controls playsinline style="position:absolute;inset:0;width:100%;height:100%;background:#000;"></video>
       </div>
     </div>
   </div>
 
   <script>
-    /* ════════════════════════════════════════════════════════
-       ADD YOUR YOUTUBE VIDEOS HERE
-       Format: { id: 'VIDEO_ID', title: 'Title', meta: 'Description' }
-       The VIDEO_ID is the part after ?v= in a YouTube URL
-    ════════════════════════════════════════════════════════ */
-    const VIDEOS = [
-      // { id: 'YOUR_VIDEO_ID', title: 'Borehole Drilling in Harare', meta: 'Watch our rig in action' },
-    ];
+    const OWNER  = 'lennexpo';
+    const REPO   = 'mwiwa-borehole-drilling';
+    const BRANCH = 'main';
 
-    // Build video grid
+    // Fetch and render videos from videos.json
     const vGrid = document.getElementById('videoGrid');
-    if (!VIDEOS.length) {
-      vGrid.innerHTML = `
-        <div class="video-empty">
-          <i class="fas fa-video"></i>
-          <p>Videos coming soon</p>
-          <small>Paste your YouTube video IDs into the VIDEOS array in this page's source code to display them here.</small>
-        </div>`;
-    } else {
-      VIDEOS.forEach(v => {
-        const c = document.createElement('div');
-        c.className = 'video-card';
-        c.dataset.id = v.id;
-        c.dataset.title = v.title;
-        c.innerHTML = `
-          <div class="video-card__thumb">
-            <img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="${v.title}" loading="lazy" />
-            <div class="video-card__play"><div class="play-btn"><i class="fas fa-play"></i></div></div>
-          </div>
-          <div class="video-card__body">
-            <div class="video-card__title">${v.title}</div>
-            <div class="video-card__meta">${v.meta || ''}</div>
-          </div>`;
-        vGrid.appendChild(c);
+    fetch(`https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/videos.json?cb=${Date.now()}`)
+      .then(r => r.json())
+      .then(videos => {
+        if (!videos.length) {
+          vGrid.innerHTML = `<div class="video-empty"><i class="fas fa-video"></i><p>Videos coming soon</p></div>`;
+          return;
+        }
+        videos.forEach(v => {
+          const label = v.name.replace(/^\d+-/, '').replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+          const c = document.createElement('div');
+          c.className = 'video-card';
+          c.dataset.url   = v.url;
+          c.dataset.title = label;
+          c.innerHTML = `
+            <div class="video-card__thumb">
+              <video src="${v.url}" preload="metadata" muted style="width:100%;height:100%;object-fit:cover;opacity:0.7;pointer-events:none;"></video>
+              <div class="video-card__play"><div class="play-btn"><i class="fas fa-play"></i></div></div>
+            </div>
+            <div class="video-card__body">
+              <div class="video-card__title">${label}</div>
+            </div>`;
+          vGrid.appendChild(c);
+        });
+      })
+      .catch(() => {
+        vGrid.innerHTML = `<div class="video-empty"><i class="fas fa-video"></i><p>Videos coming soon</p></div>`;
       });
-    }
 
     // Video modal
-    const vmModal  = document.getElementById('videoModal');
-    const vmIframe = document.getElementById('vmIframe');
-    const vmTitle  = document.getElementById('vmTitle');
+    const vmModal = document.getElementById('videoModal');
+    const vmVideo = document.getElementById('vmVideo');
+    const vmTitle = document.getElementById('vmTitle');
     document.getElementById('vmClose').addEventListener('click', closeVideo);
     vmModal.addEventListener('click', e => { if (e.target === vmModal) closeVideo(); });
     vGrid.addEventListener('click', e => {
-      const card = e.target.closest('.video-card[data-id]');
-      if (card) { vmTitle.textContent = card.dataset.title; vmIframe.src = `https://www.youtube.com/embed/${card.dataset.id}?autoplay=1&rel=0`; vmModal.classList.add('open'); document.body.style.overflow = 'hidden'; }
+      const card = e.target.closest('.video-card[data-url]');
+      if (card) {
+        vmTitle.textContent = card.dataset.title;
+        vmVideo.src = card.dataset.url;
+        vmVideo.play();
+        vmModal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
     });
-    function closeVideo() { vmModal.classList.remove('open'); setTimeout(() => vmIframe.src = '', 300); document.body.style.overflow = ''; }
+    function closeVideo() { vmModal.classList.remove('open'); vmVideo.pause(); vmVideo.src = ''; document.body.style.overflow = ''; }
 
     // Lightbox
     const lb      = document.getElementById('lightbox');
