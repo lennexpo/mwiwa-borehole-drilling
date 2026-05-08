@@ -25,11 +25,99 @@
 
     body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
 
+    /* ── Password Gate ── */
+    #gate {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .gate-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+    }
+    .gate-logo {
+      width: 56px; height: 56px;
+      background: var(--blue);
+      border-radius: 14px;
+      display: grid; place-items: center;
+      font-weight: 800; font-size: 26px;
+      color: #fff;
+    }
+    .gate-title {
+      text-align: center;
+    }
+    .gate-title h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .gate-title p { font-size: 13px; color: var(--muted); }
+
+    .gate-field {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .gate-field label { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
+    .gate-field input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .gate-field input:focus { border-color: var(--blue); }
+    .gate-field input.error { border-color: var(--red); }
+
+    .gate-error {
+      font-size: 13px;
+      color: var(--red);
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      width: 100%;
+      text-align: center;
+      display: none;
+    }
+    .gate-error.visible { display: block; }
+
+    .gate-btn {
+      width: 100%;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 13px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .gate-btn:hover { background: var(--blue-dim); }
+    .gate-footer { font-size: 12px; color: var(--muted); text-align: center; }
+
+    /* ── Dashboard (hidden until unlocked) ── */
+    #dashboard { display: none; }
+
     .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
     .header-left { display: flex; align-items: center; gap: 12px; }
     .logo-box { width: 38px; height: 38px; background: var(--blue); border-radius: 8px; display: grid; place-items: center; font-weight: 800; font-size: 18px; }
     .header-title h1 { font-size: 15px; font-weight: 700; }
     .header-title p { font-size: 12px; color: var(--muted); }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .lock-btn { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
+    .lock-btn:hover { border-color: var(--red); color: var(--red); }
 
     .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
     .btn-primary { background: var(--blue); color: #fff; }
@@ -105,59 +193,116 @@
 </head>
 <body>
 
-<header class="header">
-  <div class="header-left">
-    <div class="logo-box">M</div>
-    <div class="header-title">
-      <h1>Media Dashboard</h1>
-      <p>Mwiwa Borehole Drilling</p>
+<!-- ── Password Gate ── -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-logo">M</div>
+    <div class="gate-title">
+      <h2>Admin Access</h2>
+      <p>Mwiwa Borehole Drilling · Media Dashboard</p>
     </div>
-  </div>
-</header>
-
-<main class="main">
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab(event,'gallery')">🖼️ Images <span class="tab-count" id="galleryCount">0</span></button>
-    <button class="tab-btn" onclick="switchTab(event,'videos')">▶️ Videos <span class="tab-count" id="videoCount">0</span></button>
-  </div>
-
-  <!-- IMAGES -->
-  <div class="tab-panel active" id="tab-gallery">
-    <p class="section-title">Gallery Images</p>
-    <p class="section-sub">Upload new images or remove existing ones. Changes go live on the site instantly.</p>
-    <div class="drop-zone" id="imgDropZone">
-      <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif" onchange="handleImages(this.files)" />
-      <div class="drop-icon">📤</div>
-      <h3>Drop images here or <span class="hl">click to select</span></h3>
-      <p>JPG, PNG, WEBP · Max 10 MB each · <span class="hl">Goes live instantly</span></p>
+    <div class="gate-field">
+      <label>Password</label>
+      <input type="password" id="pwInput" placeholder="Enter password" autocomplete="current-password" />
     </div>
-    <div id="imgQueue" style="margin-bottom:16px"></div>
-    <div id="galleryLoading" class="loading-state"><span class="spinner"></span> Loading gallery…</div>
-    <div class="gallery-grid" id="galleryGrid"></div>
-    <div class="empty" id="galleryEmpty" style="display:none"><div class="empty-icon">🖼️</div><p>No images yet. Upload some above.</p></div>
+    <div class="gate-error" id="gateError">❌ Incorrect password. Please try again.</div>
+    <button class="gate-btn" onclick="checkPassword()">Unlock Dashboard</button>
+    <p class="gate-footer">🔒 Restricted access · Mwiwa Borehole Drilling</p>
   </div>
+</div>
 
-  <!-- VIDEOS -->
-  <div class="tab-panel" id="tab-videos">
-    <p class="section-title">Videos</p>
-    <p class="section-sub">Upload video files to display on the site. Stored directly in the repository.</p>
-    <div class="size-note">⚠️ Max 50 MB per video. For larger files, compress before uploading.</div>
-    <div class="drop-zone" id="vidDropZone">
-      <input type="file" multiple accept="video/mp4,video/webm,video/quicktime" onchange="handleVideos(this.files)" />
-      <div class="drop-icon">🎬</div>
-      <h3>Drop videos here or <span class="hl">click to select</span></h3>
-      <p>MP4, WEBM, MOV · Max 50 MB each · <span class="hl">Goes live instantly</span></p>
+<!-- ── Dashboard ── -->
+<div id="dashboard">
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-box">M</div>
+      <div class="header-title">
+        <h1>Media Dashboard</h1>
+        <p>Mwiwa Borehole Drilling</p>
+      </div>
     </div>
-    <div id="vidQueue" style="margin-bottom:16px"></div>
-    <div id="videoLoading" class="loading-state"><span class="spinner"></span> Loading videos…</div>
-    <div class="video-grid" id="videoGrid"></div>
-    <div class="empty" id="videoEmpty" style="display:none"><div class="empty-icon">▶️</div><p>No videos yet. Upload some above.</p></div>
-  </div>
-</main>
+    <div class="header-right">
+      <button class="lock-btn" onclick="lockDashboard()">🔒 Lock</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(event,'gallery')">🖼️ Images <span class="tab-count" id="galleryCount">0</span></button>
+      <button class="tab-btn" onclick="switchTab(event,'videos')">▶️ Videos <span class="tab-count" id="videoCount">0</span></button>
+    </div>
+
+    <!-- IMAGES -->
+    <div class="tab-panel active" id="tab-gallery">
+      <p class="section-title">Gallery Images</p>
+      <p class="section-sub">Upload new images or remove existing ones. Changes go live on the site instantly.</p>
+      <div class="drop-zone" id="imgDropZone">
+        <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif" onchange="handleImages(this.files)" />
+        <div class="drop-icon">📤</div>
+        <h3>Drop images here or <span class="hl">click to select</span></h3>
+        <p>JPG, PNG, WEBP · Max 10 MB each · <span class="hl">Goes live instantly</span></p>
+      </div>
+      <div id="imgQueue" style="margin-bottom:16px"></div>
+      <div id="galleryLoading" class="loading-state"><span class="spinner"></span> Loading gallery…</div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+      <div class="empty" id="galleryEmpty" style="display:none"><div class="empty-icon">🖼️</div><p>No images yet. Upload some above.</p></div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="tab-panel" id="tab-videos">
+      <p class="section-title">Videos</p>
+      <p class="section-sub">Upload video files to display on the site. Stored directly in the repository.</p>
+      <div class="size-note">⚠️ Max 50 MB per video. For larger files, compress before uploading.</div>
+      <div class="drop-zone" id="vidDropZone">
+        <input type="file" multiple accept="video/mp4,video/webm,video/quicktime" onchange="handleVideos(this.files)" />
+        <div class="drop-icon">🎬</div>
+        <h3>Drop videos here or <span class="hl">click to select</span></h3>
+        <p>MP4, WEBM, MOV · Max 50 MB each · <span class="hl">Goes live instantly</span></p>
+      </div>
+      <div id="vidQueue" style="margin-bottom:16px"></div>
+      <div id="videoLoading" class="loading-state"><span class="spinner"></span> Loading videos…</div>
+      <div class="video-grid" id="videoGrid"></div>
+      <div class="empty" id="videoEmpty" style="display:none"><div class="empty-icon">▶️</div><p>No videos yet. Upload some above.</p></div>
+    </div>
+  </main>
+</div>
 
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
+  /* ── Auth ── */
+  const CORRECT_PASSWORD = 'mwiwa2026';
+
+  function checkPassword() {
+    const input = document.getElementById('pwInput');
+    const error = document.getElementById('gateError');
+    if (input.value === CORRECT_PASSWORD) {
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      input.value = '';
+      loadGallery();
+      loadVideos();
+    } else {
+      input.classList.add('error');
+      error.classList.add('visible');
+      input.value = '';
+      input.focus();
+      setTimeout(() => { input.classList.remove('error'); error.classList.remove('visible'); }, 3000);
+    }
+  }
+
+  function lockDashboard() {
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('gate').style.display = 'flex';
+    document.getElementById('pwInput').focus();
+  }
+
+  // Allow Enter key on password field
+  document.getElementById('pwInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPassword();
+  });
+
+  /* ── GitHub Config ── */
   const OWNER        = 'lennexpo';
   const REPO         = 'mwiwa-borehole-drilling';
   const BRANCH       = 'main';
@@ -334,9 +479,7 @@
     try {
       const { value, sha } = await readJson(VIDEOS_JSON);
       const all = Array.isArray(value) ? value : [];
-      // Filter out old YouTube-format entries (they have no vidSha / no proper name)
       const valid = all.filter(v => v.vidSha !== undefined);
-      // If stale entries existed, wipe them from the repo now
       if (valid.length !== all.length) {
         await apiPut(VIDEOS_JSON, jsonToBase64(valid), 'Clear legacy YouTube entries', sha);
       }
@@ -386,9 +529,6 @@
     document.getElementById('toastContainer').appendChild(el);
     setTimeout(() => el.remove(), 4000);
   }
-
-  loadGallery();
-  loadVideos();
 </script>
 </body>
 </html>
