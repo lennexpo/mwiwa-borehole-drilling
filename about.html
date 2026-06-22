@@ -25,16 +25,12 @@
   <meta name="twitter:description" content="200+ borehole projects delivered across Zimbabwe. Our rig, our team, your water." />
   <meta name="twitter:image" content="https://www.mwiwaboreholedrilling.co.zw/images/img1.jpeg" />
   <meta name="twitter:image:alt" content="Mwiwa Borehole Drilling team on a project site in Harare, Zimbabwe" />
-  <!-- Geo / Local SEO -->
   <meta name="geo.region" content="ZW-HA" />
   <meta name="geo.placename" content="Harare, Zimbabwe" />
   <meta name="geo.position" content="-17.8252;31.0335" />
   <meta name="ICBM" content="-17.8252, 31.0335" />
-
-  <!-- DNS Prefetch -->
   <link rel="dns-prefetch" href="//fonts.googleapis.com" />
   <link rel="dns-prefetch" href="//fonts.gstatic.com" />
-  <link rel="dns-prefetch" href="//api.web3forms.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
@@ -79,213 +75,605 @@
   </script>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="shortcut icon" href="favicon.svg" />
-  <!-- Preload hero LCP image -->
-  <link rel="preload" as="image" href="images/img1.jpeg" />
+  <link rel="preload" as="image" href="images/img2.jpeg" />
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --navy: #0A1F3C; --navy-mid: #12305C; --teal: #0097B2; --teal-light: #00B8D4;
-      --teal-pale: #E0F7FB; --white: #FFFFFF; --off-white: #F5F8FB; --light-gray: #EAF0F5;
-      --text: #1E2D3D; --muted: #637080; --border: #D6E2EC;
-      --shadow: 0 4px 24px rgba(10,31,60,0.10); --shadow-lg: 0 8px 40px rgba(10,31,60,0.14);
-      --radius: 8px; --font-head: 'Barlow Condensed', sans-serif; --font-body: 'Nunito Sans', sans-serif;
-      --transition: 0.25s ease; --nav-h: 72px;
+      --navy: #0A1F3C;
+      --navy-mid: #12305C;
+      --teal: #0097B2;
+      --teal-light: #00B8D4;
+      --teal-pale: #E0F7FB;
+      --white: #FFFFFF;
+      --off-white: #F5F8FB;
+      --light-gray: #EAF0F5;
+      --text: #1E2D3D;
+      --muted: #637080;
+      --border: #D6E2EC;
+      --shadow: 0 4px 24px rgba(10,31,60,0.10);
+      --shadow-lg: 0 8px 40px rgba(10,31,60,0.14);
+      --radius: 8px;
+      --font-head: 'Barlow Condensed', sans-serif;
+      --font-body: 'Nunito Sans', sans-serif;
+      --transition: 0.25s ease;
+      --nav-h: 72px;
     }
+
     html { scroll-behavior: smooth; }
     body { font-family: var(--font-body); color: var(--text); background: var(--white); line-height: 1.65; overflow-x: hidden; }
 
-    /* NAVBAR */
-    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; height: var(--nav-h); background: var(--white); box-shadow: 0 2px 16px rgba(10,31,60,0.09); display: flex; align-items: center; }
-    .nav-container { max-width: 1200px; width: 100%; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
-    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .nav-brand .brand-icon { width: 38px; height: 38px; background: var(--teal); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-    .nav-brand .brand-icon i { color: white; font-size: 17px; }
+    /* ===================== FLOATING PILL NAVBAR ===================== */
+    .navbar {
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 1000; width: calc(100% - 48px); max-width: 1160px;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; height: 56px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 100px;
+      box-shadow:
+        0 4px 24px rgba(10, 31, 60, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .navbar.scrolled .nav-inner {
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow:
+        0 8px 40px rgba(10, 31, 60, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0;
+    }
+    .nav-brand .brand-icon {
+      width: 34px; height: 34px; background: var(--teal);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+    .nav-brand .brand-icon i { color: white; font-size: 14px; }
     .nav-brand .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
-    .nav-brand .brand-name { font-family: var(--font-head); font-weight: 800; font-size: 18px; color: var(--navy); letter-spacing: 0.3px; text-transform: uppercase; }
-    .nav-brand .brand-sub { font-size: 10px; color: var(--teal); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-    .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
-    .nav-links a { display: block; padding: 8px 14px; text-decoration: none; font-size: 14px; font-weight: 600; color: var(--text); border-radius: 6px; transition: var(--transition); position: relative; }
-    .nav-links a::after { content: ''; position: absolute; bottom: 2px; left: 14px; right: 14px; height: 2px; background: var(--teal); transform: scaleX(0); transition: transform var(--transition); border-radius: 2px; }
-    .nav-links a:hover { color: var(--teal); }
-    .nav-links a:hover::after { transform: scaleX(1); }
-    .nav-links a.active { color: var(--teal); }
-    .nav-links a.active::after { transform: scaleX(1); }
-    .nav-cta { background: var(--teal); color: white !important; border-radius: 6px !important; padding: 9px 18px !important; }
-    .nav-cta::after { display: none !important; }
-    .nav-cta:hover { background: var(--navy) !important; color: white !important; }
-    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; background: none; border: none; }
-    .hamburger span { display: block; width: 24px; height: 2px; background: var(--navy); border-radius: 2px; transition: var(--transition); }
-    .mobile-menu { display: none; position: fixed; top: var(--nav-h); left: 0; right: 0; background: white; box-shadow: 0 8px 30px rgba(10,31,60,0.12); padding: 16px 24px 24px; z-index: 999; }
+    .nav-brand .brand-name {
+      font-family: var(--font-head); font-weight: 800; font-size: 16px;
+      color: var(--navy); letter-spacing: 0.3px; text-transform: uppercase;
+    }
+    .nav-brand .brand-sub {
+      font-size: 9px; color: var(--teal); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 2px; list-style: none;
+    }
+    .nav-links a {
+      display: block; padding: 7px 13px; text-decoration: none;
+      font-size: 13px; font-weight: 600; color: var(--text);
+      border-radius: 100px; transition: all 0.2s ease;
+    }
+    .nav-links a:hover { color: var(--teal); background: rgba(0, 151, 178, 0.08); }
+    .nav-links a.active {
+      color: var(--teal); background: rgba(0, 151, 178, 0.1);
+    }
+    .nav-cta {
+      background: var(--teal) !important; color: white !important;
+      padding: 8px 18px !important; border-radius: 100px !important;
+      box-shadow: 0 2px 12px rgba(0, 151, 178, 0.3);
+    }
+    .nav-cta:hover {
+      background: var(--navy) !important; color: white !important;
+      box-shadow: 0 4px 16px rgba(10, 31, 60, 0.25) !important;
+    }
+    .hamburger {
+      display: none; flex-direction: column; gap: 4px;
+      cursor: pointer; padding: 6px; background: none; border: none;
+    }
+    .hamburger span {
+      display: block; width: 20px; height: 2px;
+      background: var(--navy); border-radius: 2px; transition: var(--transition);
+    }
+    /* Mobile menu — drops below pill */
+    .mobile-menu {
+      display: none; position: fixed; top: 84px; left: 24px; right: 24px;
+      background: rgba(255,255,255,0.97);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 20px;
+      box-shadow: 0 16px 48px rgba(10,31,60,0.16);
+      padding: 12px 20px 18px; z-index: 999;
+    }
     .mobile-menu.open { display: block; }
-    .mobile-menu a { display: block; padding: 12px 0; font-size: 16px; font-weight: 600; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); }
+    .mobile-menu a {
+      display: block; padding: 11px 0; font-size: 15px; font-weight: 600;
+      color: var(--text); text-decoration: none;
+      border-bottom: 1px solid var(--border);
+    }
     .mobile-menu a:last-child { border-bottom: none; }
     .mobile-menu a.active, .mobile-menu a:hover { color: var(--teal); }
 
-    /* PAGE HERO */
+    /* ===================== PAGE HERO ===================== */
     .page-hero {
-      background: var(--navy); padding: calc(var(--nav-h) + 64px) 24px 72px;
+      min-height: 52vh;
+      display: flex; align-items: flex-end;
       position: relative; overflow: hidden;
+      background: var(--navy);
+      padding-top: calc(var(--nav-h) + 40px);
+      padding-bottom: 72px;
     }
-    .page-hero::before {
-      content: ''; position: absolute; inset: 0; opacity: 0.05;
-      background-image: repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(255,255,255,0.5) 48px, rgba(255,255,255,0.5) 50px), repeating-linear-gradient(90deg, transparent, transparent 48px, rgba(255,255,255,0.5) 48px, rgba(255,255,255,0.5) 50px);
+    .hero-bg-img {
+      position: absolute; inset: 0; z-index: 0;
+      background-image: url('images/img2.jpeg');
+      background-size: cover; background-position: center 30%;
+      opacity: 0.35;
     }
-    .page-hero-container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
-    .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
-    .breadcrumb a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 13px; font-weight: 600; transition: var(--transition); }
+    .hero-gradient {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(160deg, rgba(10,31,60,0.6) 0%, rgba(0,80,110,0.3) 60%, rgba(10,31,60,0.75) 100%);
+    }
+    .hero-pattern {
+      position: absolute; inset: 0; opacity: 0.03; z-index: 1;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(255,255,255,0.5) 48px, rgba(255,255,255,0.5) 50px),
+        repeating-linear-gradient(90deg, transparent, transparent 48px, rgba(255,255,255,0.5) 48px, rgba(255,255,255,0.5) 50px);
+    }
+    /* Decorative teal line accent */
+    .hero-line-accent {
+      position: absolute; left: 0; bottom: 0; height: 3px;
+      width: 100%; z-index: 3;
+      background: linear-gradient(90deg, var(--teal) 0%, var(--teal-light) 40%, transparent 100%);
+    }
+    .page-hero-container {
+      max-width: 1200px; width: 100%; margin: 0 auto;
+      padding: 0 24px; position: relative; z-index: 2;
+    }
+    .breadcrumb {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 24px;
+    }
+    .breadcrumb a {
+      color: rgba(255,255,255,0.45); text-decoration: none;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+      text-transform: uppercase; transition: var(--transition);
+    }
     .breadcrumb a:hover { color: var(--teal-light); }
-    .breadcrumb span { color: rgba(255,255,255,0.3); font-size: 13px; }
-    .breadcrumb .current { color: var(--teal-light); font-size: 13px; font-weight: 600; }
-    .page-hero h1 { font-family: var(--font-head); font-size: clamp(38px, 6vw, 64px); font-weight: 800; color: white; text-transform: uppercase; line-height: 1; }
-    .page-hero h1 span { color: var(--teal-light); }
-    .page-hero p { color: rgba(255,255,255,0.65); font-size: 17px; max-width: 520px; margin-top: 16px; line-height: 1.7; }
+    .breadcrumb span { color: rgba(255,255,255,0.25); font-size: 12px; }
+    .breadcrumb .current {
+      color: var(--teal-light); font-size: 12px;
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,151,178,0.18); border: 1px solid rgba(0,151,178,0.3);
+      color: var(--teal-light); border-radius: 100px; padding: 5px 14px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .page-hero h1 {
+      font-family: var(--font-head); font-weight: 800;
+      font-size: clamp(48px, 7vw, 80px);
+      color: white; line-height: 0.95; letter-spacing: -0.5px;
+      text-transform: uppercase; max-width: 680px;
+    }
+    .page-hero h1 .accent { color: var(--teal-light); }
+    .hero-sub {
+      margin-top: 20px; font-size: 16px; color: rgba(255,255,255,0.65);
+      max-width: 480px; line-height: 1.7;
+    }
+    .hero-stats-pill {
+      display: flex; gap: 0; margin-top: 40px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; overflow: hidden; width: fit-content;
+    }
+    .hero-stat-item {
+      padding: 18px 32px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    .hero-stat-item:last-child { border-right: none; }
+    .hero-stat-num {
+      font-family: var(--font-head); font-size: 32px; font-weight: 800;
+      color: var(--teal-light); line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 10px; color: rgba(255,255,255,0.5);
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-top: 4px; font-weight: 600;
+    }
 
-    /* CONTENT */
+    /* ===================== SECTIONS ===================== */
     section { padding: 88px 24px; }
     .section-container { max-width: 1200px; margin: 0 auto; }
-    .section-label { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--teal); margin-bottom: 12px; }
-    .section-title { font-family: var(--font-head); font-weight: 800; font-size: clamp(28px, 4vw, 44px); text-transform: uppercase; color: var(--navy); line-height: 1.05; }
+    .section-label {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 2px; color: var(--teal);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-head); font-weight: 800;
+      font-size: clamp(30px, 4.5vw, 50px); text-transform: uppercase;
+      color: var(--navy); line-height: 1.0; letter-spacing: 0.2px;
+    }
     .section-title span { color: var(--teal); }
-    .section-desc { margin-top: 16px; font-size: 16px; color: var(--muted); max-width: 560px; line-height: 1.7; }
+    .section-desc {
+      margin-top: 16px; font-size: 16px; color: var(--muted);
+      max-width: 540px; line-height: 1.75;
+    }
     .section-header { margin-bottom: 56px; }
 
-    /* ABOUT INTRO */
-    .about-intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
-    .about-image-block {
+    /* ===================== STORY SECTION (SPLIT) ===================== */
+    .story-section { background: var(--white); }
+    .story-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .story-image-wrap { position: relative; }
+    .story-img-main {
+      width: 100%; aspect-ratio: 4/3;
+      border-radius: 16px; overflow: hidden;
       position: relative;
     }
-    .about-img-main {
-      width: 100%; aspect-ratio: 4/3;
-      background: linear-gradient(135deg, var(--navy-mid), var(--teal));
-      border-radius: 12px; display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
+    .story-img-main img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.6s ease;
     }
-    .about-img-main .img-inner {
-      text-align: center; color: rgba(255,255,255,0.5);
+    .story-img-main:hover img { transform: scale(1.03); }
+    /* Decorative corner accent */
+    .story-img-main::before {
+      content: '';
+      position: absolute; top: -12px; left: -12px;
+      width: 80px; height: 80px;
+      border-top: 3px solid var(--teal);
+      border-left: 3px solid var(--teal);
+      border-radius: 4px 0 0 0;
+      z-index: 1; pointer-events: none;
     }
-    .about-img-main .img-inner i { font-size: 56px; margin-bottom: 12px; display: block; }
-    .about-img-main .img-inner p { font-size: 13px; font-weight: 600; }
-    .about-badge-float {
-      position: absolute; bottom: -20px; right: -20px;
-      background: var(--teal); color: white; border-radius: 12px;
-      padding: 20px 24px; text-align: center;
-      box-shadow: 0 8px 32px rgba(0,151,178,0.35);
+    .story-img-main::after {
+      content: '';
+      position: absolute; bottom: -12px; right: -12px;
+      width: 80px; height: 80px;
+      border-bottom: 3px solid var(--teal-light);
+      border-right: 3px solid var(--teal-light);
+      border-radius: 0 0 4px 0;
+      z-index: 1; pointer-events: none;
     }
-    .about-badge-float .big { font-family: var(--font-head); font-size: 42px; font-weight: 800; line-height: 1; }
-    .about-badge-float .small { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: 0.85; margin-top: 4px; }
-    .about-content { }
-    .about-content p { font-size: 16px; color: var(--muted); line-height: 1.75; margin-bottom: 18px; }
-    .about-content p strong { color: var(--text); }
-    .about-features { margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
-    .about-feature { display: flex; align-items: flex-start; gap: 12px; }
-    .about-feature .check { width: 24px; height: 24px; background: var(--teal-pale); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-    .about-feature .check i { color: var(--teal); font-size: 11px; }
-    .about-feature p { margin: 0; font-size: 15px; color: var(--text); line-height: 1.5; }
+    /* Badge card float */
+    .story-badge {
+      position: absolute; bottom: -24px; left: -24px;
+      background: var(--navy); color: white;
+      border-radius: 14px; padding: 20px 24px;
+      box-shadow: 0 12px 40px rgba(10,31,60,0.25);
+      border: 1px solid rgba(255,255,255,0.08);
+      z-index: 2;
+    }
+    .story-badge .badge-num {
+      font-family: var(--font-head); font-size: 40px;
+      font-weight: 800; line-height: 1; color: var(--teal-light);
+    }
+    .story-badge .badge-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; opacity: 0.7; margin-top: 4px;
+    }
+    /* Second small badge top right */
+    .story-badge-2 {
+      position: absolute; top: -16px; right: -16px;
+      background: var(--teal); color: white;
+      border-radius: 50%; width: 72px; height: 72px;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; text-align: center;
+      box-shadow: 0 8px 24px rgba(0,151,178,0.35);
+      z-index: 2;
+    }
+    .story-badge-2 .b2-num {
+      font-family: var(--font-head); font-size: 20px;
+      font-weight: 800; line-height: 1;
+    }
+    .story-badge-2 .b2-label {
+      font-size: 7px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; opacity: 0.85; margin-top: 2px;
+    }
+    .story-content { }
+    .story-body p {
+      font-size: 16px; color: var(--muted); line-height: 1.8;
+      margin-bottom: 18px;
+    }
+    .story-body p strong { color: var(--text); font-weight: 700; }
+    .story-checklist {
+      margin-top: 28px; display: flex; flex-direction: column; gap: 12px;
+    }
+    .story-check-item {
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .check-dot {
+      flex-shrink: 0; width: 22px; height: 22px;
+      background: var(--teal); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+    }
+    .check-dot i { color: white; font-size: 9px; }
+    .story-check-item span {
+      font-size: 14px; color: var(--text); font-weight: 600; line-height: 1.5;
+    }
+    .story-cta-row {
+      display: flex; gap: 14px; flex-wrap: wrap; margin-top: 36px;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--teal); color: white; text-decoration: none;
+      padding: 13px 26px; border-radius: 100px;
+      font-weight: 700; font-size: 14px; transition: var(--transition);
+      border: 2px solid transparent;
+    }
+    .btn-primary:hover { background: var(--navy); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,151,178,0.35); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--navy); text-decoration: none;
+      padding: 13px 26px; border-radius: 100px;
+      font-weight: 700; font-size: 14px; transition: var(--transition);
+      border: 2px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
 
-    /* VALUES */
+    /* ===================== DIFFERENTIATORS (DARK) ===================== */
+    .diff-section { background: var(--navy); }
+    .diff-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px;
+      border-radius: 16px; overflow: hidden;
+    }
+    .diff-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 40px 36px;
+      transition: var(--transition);
+      position: relative; overflow: hidden;
+    }
+    .diff-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--teal), var(--teal-light));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+    .diff-card:hover { background: rgba(0,151,178,0.07); border-color: rgba(0,151,178,0.2); }
+    .diff-card:hover::before { transform: scaleX(1); }
+    .diff-number {
+      font-family: var(--font-head); font-size: 48px; font-weight: 800;
+      color: rgba(0,184,212,0.15); line-height: 1;
+      position: absolute; top: 24px; right: 28px;
+      pointer-events: none;
+    }
+    .diff-icon {
+      width: 50px; height: 50px;
+      background: rgba(0,151,178,0.18); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .diff-icon i { color: var(--teal-light); font-size: 20px; }
+    .diff-card h3 {
+      font-family: var(--font-head); font-size: 20px; font-weight: 700;
+      color: white; text-transform: uppercase; letter-spacing: 0.3px;
+      margin-bottom: 10px;
+    }
+    .diff-card p { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.7; }
+
+    /* ===================== VALUES STRIP ===================== */
     .values-section { background: var(--off-white); }
-    .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .values-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
     .value-card {
-      background: white; border-radius: 12px; padding: 36px 28px;
-      border: 1px solid var(--border); text-align: center;
+      background: white; border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 36px 28px; text-align: center;
+      transition: var(--transition); position: relative; overflow: hidden;
+    }
+    .value-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--teal-light));
+      transform: scaleX(0); transition: transform 0.3s ease;
+    }
+    .value-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: transparent; }
+    .value-card:hover::after { transform: scaleX(1); }
+    .v-icon {
+      width: 64px; height: 64px; background: var(--teal-pale);
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; margin: 0 auto 20px;
       transition: var(--transition);
     }
-    .value-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-    .value-card .v-icon {
-      width: 64px; height: 64px; background: var(--teal-pale);
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px;
+    .value-card:hover .v-icon { background: var(--teal); }
+    .value-card:hover .v-icon i { color: white; }
+    .v-icon i { font-size: 26px; color: var(--teal); transition: var(--transition); }
+    .value-card h3 {
+      font-family: var(--font-head); font-size: 20px; font-weight: 800;
+      color: var(--navy); text-transform: uppercase; margin-bottom: 10px;
     }
-    .value-card .v-icon i { font-size: 26px; color: var(--teal); }
-    .value-card h3 { font-family: var(--font-head); font-size: 20px; font-weight: 800; color: var(--navy); text-transform: uppercase; margin-bottom: 10px; }
     .value-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
 
-    /* SECTORS */
-    .sectors-section { }
-    .sectors-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-    .sector-card {
-      border-radius: 12px; padding: 36px 20px; text-align: center;
-      transition: var(--transition); cursor: default;
+    /* ===================== SECTORS ===================== */
+    .sectors-section { background: var(--white); }
+    .sectors-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
     }
-    .sector-card:nth-child(1) { background: linear-gradient(135deg, #E3F2FD, #BBDEFB); }
-    .sector-card:nth-child(2) { background: linear-gradient(135deg, #E8F5E9, #C8E6C9); }
-    .sector-card:nth-child(3) { background: linear-gradient(135deg, #FFF8E1, #FFE082); }
-    .sector-card:nth-child(4) { background: linear-gradient(135deg, #FCE4EC, #F8BBD9); }
-    .sector-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
-    .sector-card i { font-size: 32px; margin-bottom: 14px; display: block; color: var(--navy); }
-    .sector-card h3 { font-family: var(--font-head); font-size: 18px; font-weight: 800; color: var(--navy); text-transform: uppercase; margin-bottom: 8px; }
-    .sector-card p { font-size: 13px; color: var(--muted); }
+    .sector-card {
+      border-radius: 14px; padding: 36px 22px; text-align: center;
+      transition: var(--transition); cursor: default; position: relative;
+      overflow: hidden;
+    }
+    .sector-card:nth-child(1) { background: linear-gradient(145deg, #EBF5FF, #D6EAFF); }
+    .sector-card:nth-child(2) { background: linear-gradient(145deg, #EAFAF1, #D0F0E0); }
+    .sector-card:nth-child(3) { background: linear-gradient(145deg, #FFFBEC, #FFF0C0); }
+    .sector-card:nth-child(4) { background: linear-gradient(145deg, #F2EAFB, #E2D5F5); }
+    .sector-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+    .sector-icon-wrap {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(255,255,255,0.6); display: flex; align-items: center;
+      justify-content: center; margin: 0 auto 16px;
+    }
+    .sector-icon-wrap i { font-size: 24px; color: var(--navy); }
+    .sector-card h3 {
+      font-family: var(--font-head); font-size: 18px; font-weight: 800;
+      color: var(--navy); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .sector-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-    /* STATS ROW */
-    .stats-row { background: var(--navy); }
-    .stats-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); }
-    .stat-item { padding: 48px 24px; text-align: center; border-right: 1px solid rgba(255,255,255,0.1); }
-    .stat-item:last-child { border-right: none; }
-    .stat-item .sn { font-family: var(--font-head); font-size: 52px; font-weight: 800; color: var(--teal-light); line-height: 1; }
-    .stat-item .sl { font-size: 13px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; font-weight: 600; }
+    /* ===================== TIMELINE / PROCESS ===================== */
+    .process-section { background: var(--navy); }
+    .process-track {
+      position: relative; display: flex; flex-direction: column; gap: 0;
+    }
+    .process-track::before {
+      content: '';
+      position: absolute; left: 27px; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom, var(--teal), rgba(0,184,212,0.1));
+    }
+    .process-step {
+      display: flex; gap: 28px; align-items: flex-start;
+      padding-bottom: 44px; position: relative;
+    }
+    .process-step:last-child { padding-bottom: 0; }
+    .process-num {
+      flex-shrink: 0; width: 56px; height: 56px;
+      background: var(--navy-mid); border: 2px solid rgba(0,151,178,0.4);
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; position: relative; z-index: 1;
+    }
+    .process-num span {
+      font-family: var(--font-head); font-size: 20px; font-weight: 800;
+      color: var(--teal-light);
+    }
+    .process-body { padding-top: 14px; }
+    .process-body h3 {
+      font-family: var(--font-head); font-size: 20px; font-weight: 700;
+      color: white; text-transform: uppercase; margin-bottom: 8px;
+    }
+    .process-body p { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.7; max-width: 480px; }
 
-    /* CTA */
-    .cta-section { background: linear-gradient(135deg, var(--teal) 0%, var(--navy-mid) 100%); text-align: center; }
-    .cta-section h2 { font-family: var(--font-head); font-size: clamp(28px, 5vw, 44px); font-weight: 800; color: white; text-transform: uppercase; margin-bottom: 16px; }
-    .cta-section p { color: rgba(255,255,255,0.8); font-size: 16px; margin-bottom: 36px; max-width: 480px; margin-left: auto; margin-right: auto; }
+    /* ===================== CTA SECTION ===================== */
+    .cta-section {
+      background: linear-gradient(135deg, var(--teal) 0%, var(--navy-mid) 100%);
+      text-align: center; padding: 88px 24px;
+    }
+    .cta-section h2 {
+      font-family: var(--font-head); font-size: clamp(28px, 5vw, 50px);
+      font-weight: 800; color: white; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .cta-section p {
+      color: rgba(255,255,255,0.8); font-size: 16px; margin-bottom: 36px;
+      max-width: 480px; margin-left: auto; margin-right: auto;
+    }
     .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-    .btn-white { display: inline-flex; align-items: center; gap: 8px; background: white; color: var(--navy); text-decoration: none; padding: 14px 28px; border-radius: var(--radius); font-weight: 700; font-size: 15px; transition: var(--transition); border: 2px solid white; }
+    .btn-white {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: white; color: var(--navy); text-decoration: none;
+      padding: 14px 28px; border-radius: 100px;
+      font-weight: 700; font-size: 15px; transition: var(--transition);
+      border: 2px solid white;
+    }
     .btn-white:hover { background: transparent; color: white; }
-    .btn-outline-white { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: white; text-decoration: none; padding: 14px 28px; border-radius: var(--radius); font-weight: 700; font-size: 15px; transition: var(--transition); border: 2px solid rgba(255,255,255,0.5); }
+    .btn-outline-white {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: white; text-decoration: none;
+      padding: 14px 28px; border-radius: 100px;
+      font-weight: 700; font-size: 15px; transition: var(--transition);
+      border: 2px solid rgba(255,255,255,0.5);
+    }
     .btn-outline-white:hover { border-color: white; background: rgba(255,255,255,0.1); }
 
-    /* FOOTER */
-    footer { background: var(--navy); color: rgba(255,255,255,0.7); padding: 56px 24px 24px; }
-    .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .footer-brand .brand-name { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+    /* ===================== FOOTER ===================== */
+    footer {
+      background: var(--navy); color: rgba(255,255,255,0.7);
+      padding: 56px 24px 24px;
+    }
+    .footer-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 48px;
+      padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .footer-brand .brand-name {
+      font-family: var(--font-head); font-size: 22px; font-weight: 800;
+      color: white; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
+    }
     .footer-brand p { font-size: 14px; line-height: 1.7; max-width: 280px; }
-    .footer-col h4 { font-family: var(--font-head); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: white; margin-bottom: 18px; }
+    .footer-col h4 {
+      font-family: var(--font-head); font-size: 14px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px; color: white; margin-bottom: 18px;
+    }
     .footer-col ul { list-style: none; }
     .footer-col ul li { margin-bottom: 10px; }
-    .footer-col ul a { color: rgba(255,255,255,0.65); text-decoration: none; font-size: 14px; transition: var(--transition); }
+    .footer-col ul a {
+      color: rgba(255,255,255,0.65); text-decoration: none; font-size: 14px;
+      transition: var(--transition);
+    }
     .footer-col ul a:hover { color: var(--teal-light); }
-    .footer-contact-item { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; font-size: 14px; }
+    .footer-contact-item {
+      display: flex; gap: 10px; align-items: flex-start;
+      margin-bottom: 12px; font-size: 14px;
+    }
     .footer-contact-item i { color: var(--teal); margin-top: 3px; width: 14px; flex-shrink: 0; }
     .footer-contact-item a { color: rgba(255,255,255,0.65); text-decoration: none; }
     .footer-contact-item a:hover { color: var(--teal-light); }
-    .footer-bottom { max-width: 1200px; margin: 24px auto 0; display: flex; justify-content: space-between; align-items: center; font-size: 13px; flex-wrap: wrap; gap: 8px; }
+    .footer-bottom {
+      max-width: 1200px; margin: 24px auto 0;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; flex-wrap: wrap; gap: 8px;
+    }
     .footer-bottom a { color: var(--teal-light); text-decoration: none; }
 
-    /* REVEAL */
-    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    /* ===================== REVEAL ANIMATIONS ===================== */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
     .reveal.visible { opacity: 1; transform: none; }
     .reveal-delay-1 { transition-delay: 0.1s; }
     .reveal-delay-2 { transition-delay: 0.2s; }
     .reveal-delay-3 { transition-delay: 0.3s; }
     .reveal-delay-4 { transition-delay: 0.4s; }
 
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* ===================== RESPONSIVE ===================== */
     @media (max-width: 1024px) {
-      .about-intro-grid { grid-template-columns: 1fr; gap: 56px; }
+      .story-grid { grid-template-columns: 1fr; gap: 56px; }
+      .story-image-wrap { max-width: 540px; }
+      .diff-grid { grid-template-columns: 1fr; }
       .sectors-grid { grid-template-columns: repeat(2, 1fr); }
-      .stats-inner { grid-template-columns: repeat(2, 1fr); }
-      .stat-item:nth-child(2) { border-right: none; }
-      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
       .values-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
     }
     @media (max-width: 768px) {
+      .navbar { top: 10px; width: calc(100% - 32px); }
       .nav-links { display: none; }
       .hamburger { display: flex; }
-      .about-badge-float { position: static; margin-top: 16px; display: inline-block; }
       .values-grid { grid-template-columns: 1fr; }
       .sectors-grid { grid-template-columns: 1fr 1fr; }
       .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .story-badge { position: static; margin-top: 16px; display: inline-block; border-radius: 12px; }
+      .story-badge-2 { display: none; }
+      .hero-stats-pill { flex-wrap: wrap; }
+      .hero-stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+      .hero-stat-item:last-child { border-bottom: none; }
     }
     @media (max-width: 480px) {
       section { padding: 64px 20px; }
       .sectors-grid { grid-template-columns: 1fr; }
-      .stats-inner { grid-template-columns: 1fr; }
-      .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+      .diff-grid { gap: 1px; }
+      .page-hero { padding-bottom: 56px; }
     }
   </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="nav-container">
+
+  <!-- FLOATING PILL NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
       <a href="index.html" class="nav-brand">
         <div class="brand-icon"><i class="fas fa-water"></i></div>
         <div class="brand-text">
@@ -301,7 +689,9 @@
         <li><a href="why-us.html">Why Us</a></li>
         <li><a href="contact.html" class="nav-cta">Get a Quote</a></li>
       </ul>
-      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
   <div class="mobile-menu" id="mobileMenu">
@@ -315,82 +705,132 @@
 
   <!-- PAGE HERO -->
   <div class="page-hero">
+    <div class="hero-bg-img"></div>
+    <div class="hero-gradient"></div>
+    <div class="hero-pattern"></div>
+    <div class="hero-line-accent"></div>
     <div class="page-hero-container">
       <div class="breadcrumb">
         <a href="index.html">Home</a>
         <span>/</span>
         <span class="current">About Us</span>
       </div>
-      <h1>About <span>Mwiwa</span></h1>
-      <p>Harare's fully equipped borehole drilling specialists. 200+ projects delivered across residential, commercial, agricultural, and industrial sectors.</p>
+      <div class="hero-eyebrow">
+        <i class="fas fa-circle-check" style="font-size:9px;"></i>
+        Harare's Trusted Specialists
+      </div>
+      <h1>Built on <span class="accent">Water.</span><br>Proven by Results.</h1>
+      <p class="hero-sub">200+ projects across Zimbabwe. One team, one rig, full accountability from the first survey to the final pump test.</p>
+      <div class="hero-stats-pill">
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">200+</div>
+          <div class="hero-stat-label">Projects Done</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">4</div>
+          <div class="hero-stat-label">Sectors Served</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">7</div>
+          <div class="hero-stat-label">Core Services</div>
+        </div>
+        <div class="hero-stat-item">
+          <div class="hero-stat-num">1</div>
+          <div class="hero-stat-label">Call to Start</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ABOUT INTRO -->
-  <section>
+  <!-- STORY / WHO WE ARE -->
+  <section class="story-section">
     <div class="section-container">
-      <div class="about-intro-grid">
-        <div class="about-image-block reveal">
-          <div class="about-img-main">
-            <img src="images/img1.jpeg" alt="Mwiwa Borehole Drilling rig in operation, Harare Zimbabwe" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:12px;display:block;" /></div>
+      <div class="story-grid">
+        <div class="story-image-wrap reveal">
+          <div class="story-img-main">
+            <img src="images/img1.jpeg" alt="Mwiwa Borehole Drilling rig in operation, Harare Zimbabwe" loading="lazy" />
           </div>
-          <div class="about-badge-float">
-            <div class="big">200+</div>
-            <div class="small">Projects Completed</div>
+          <div class="story-badge">
+            <div class="badge-num">200+</div>
+            <div class="badge-label">Projects Completed</div>
+          </div>
+          <div class="story-badge-2">
+            <div class="b2-num">Own</div>
+            <div class="b2-label">Rig</div>
           </div>
         </div>
-        <div class="about-content reveal reveal-delay-1">
+
+        <div class="story-content reveal reveal-delay-1">
           <span class="section-label">Who We Are</span>
           <h2 class="section-title">Harare's <span>Fully Equipped</span> Borehole Company</h2>
-          <div style="margin-top: 24px;">
-            <p>Mwiwa Borehole Drilling is based in Kamfinsa, Harare, Zimbabwe. We are a <strong>fully equipped, professional borehole drilling company</strong> — meaning we own and operate our own heavy drilling machinery.</p>
-            <p>That matters because it means every project is delivered with speed, precision, and direct accountability. No delays waiting for a subcontractor's rig. No inflated costs from third-party equipment hire. Just our team, our rig, and a commitment to getting water to your property.</p>
-            <p>From the initial geophysical site survey to full pump installation and commissioning, <strong>we handle every step in-house</strong>. Our experienced team has successfully completed 200+ projects across residential, commercial, agricultural, and industrial sectors throughout Zimbabwe.</p>
+          <div class="story-body" style="margin-top:24px;">
+            <p>Mwiwa Borehole Drilling is based in Kamfinsa, Harare, Zimbabwe. We are a <strong>fully equipped, professional borehole drilling company</strong> — which means we own and operate our own heavy drilling machinery on every single project.</p>
+            <p>That distinction matters. No delays waiting for a subcontractor's rig. No inflated costs from third-party hire. No gaps in accountability. Just our team, our equipment, and a direct commitment to delivering water to your property.</p>
+            <p>From the initial geophysical site survey through to full pump installation and commissioning, <strong>we handle every stage in-house</strong>. Over 200 projects delivered across residential, commercial, agricultural, and industrial sectors throughout Zimbabwe.</p>
           </div>
-          <div class="about-features">
-            <div class="about-feature">
-              <div class="check"><i class="fas fa-check"></i></div>
-              <p>Own heavy drilling rig — no subcontracting on any job</p>
+          <div class="story-checklist">
+            <div class="story-check-item">
+              <div class="check-dot"><i class="fas fa-check"></i></div>
+              <span>Own heavy drilling rig — no subcontracting on any job</span>
             </div>
-            <div class="about-feature">
-              <div class="check"><i class="fas fa-check"></i></div>
-              <p>Geophysical survey equipment for scientific site siting</p>
+            <div class="story-check-item">
+              <div class="check-dot"><i class="fas fa-check"></i></div>
+              <span>Geophysical survey equipment for scientific site siting</span>
             </div>
-            <div class="about-feature">
-              <div class="check"><i class="fas fa-check"></i></div>
-              <p>Full in-house team from drilling to pump commissioning</p>
+            <div class="story-check-item">
+              <div class="check-dot"><i class="fas fa-check"></i></div>
+              <span>Full in-house team from drilling to pump commissioning</span>
             </div>
-            <div class="about-feature">
-              <div class="check"><i class="fas fa-check"></i></div>
-              <p>200+ successfully completed projects across Zimbabwe</p>
+            <div class="story-check-item">
+              <div class="check-dot"><i class="fas fa-check"></i></div>
+              <span>Nationwide coverage — residential to industrial</span>
             </div>
+          </div>
+          <div class="story-cta-row">
+            <a href="services.html" class="btn-primary"><i class="fas fa-arrow-right"></i> Our Services</a>
+            <a href="contact.html" class="btn-ghost"><i class="fas fa-file-alt"></i> Get a Quote</a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- STATS -->
-  <div class="stats-row">
-    <div class="stats-inner">
-      <div class="stat-item reveal">
-        <div class="sn">200+</div>
-        <div class="sl">Projects Completed</div>
+  <!-- WHAT MAKES US DIFFERENT (DARK) -->
+  <section class="diff-section">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <span class="section-label" style="color:var(--teal-light)">Why Mwiwa</span>
+        <h2 class="section-title" style="color:white;">Built Different.<br><span>Priced Right.</span></h2>
+        <p class="section-desc" style="color:rgba(255,255,255,0.55);">We don't outsource your project. We show up with our own rig, our own team, and our own expertise — every time.</p>
       </div>
-      <div class="stat-item reveal reveal-delay-1">
-        <div class="sn">4</div>
-        <div class="sl">Sectors Served</div>
-      </div>
-      <div class="stat-item reveal reveal-delay-2">
-        <div class="sn">7</div>
-        <div class="sl">Core Services</div>
-      </div>
-      <div class="stat-item reveal reveal-delay-3">
-        <div class="sn">1</div>
-        <div class="sl">Call to Start</div>
+      <div class="diff-grid">
+        <div class="diff-card reveal reveal-delay-1">
+          <div class="diff-number">01</div>
+          <div class="diff-icon"><i class="fas fa-truck"></i></div>
+          <h3>We Own Our Equipment</h3>
+          <p>Our heavy drilling rig is on-site for every job. No subcontracting means faster scheduling, direct accountability, and lower cost passed directly to you.</p>
+        </div>
+        <div class="diff-card reveal reveal-delay-2">
+          <div class="diff-number">02</div>
+          <div class="diff-icon"><i class="fas fa-satellite-dish"></i></div>
+          <h3>Scientific Siting First</h3>
+          <p>We use geophysical survey tools to identify the optimal drilling point before any work begins — maximising water yield and minimising risk.</p>
+        </div>
+        <div class="diff-card reveal reveal-delay-3">
+          <div class="diff-number">03</div>
+          <div class="diff-icon"><i class="fas fa-project-diagram"></i></div>
+          <h3>End-to-End Service</h3>
+          <p>From site survey to solar pump commissioning, we manage the entire project. One team, one point of contact, full responsibility at every stage.</p>
+        </div>
+        <div class="diff-card reveal reveal-delay-4">
+          <div class="diff-number">04</div>
+          <div class="diff-icon"><i class="fab fa-whatsapp"></i></div>
+          <h3>Direct & Responsive</h3>
+          <p>Reach us instantly on WhatsApp or by phone. No call centres, no middlemen — a direct line to the team who will actually do your project.</p>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- VALUES -->
   <section class="values-section">
@@ -398,30 +838,30 @@
       <div class="section-header reveal">
         <span class="section-label">How We Work</span>
         <h2 class="section-title">Our Core <span>Values</span></h2>
-        <p class="section-desc">Everything we do is guided by a commitment to precision, reliability, and honest service.</p>
+        <p class="section-desc">Everything we do is guided by a commitment to precision, reliability, and honest service from start to finish.</p>
       </div>
       <div class="values-grid">
         <div class="value-card reveal reveal-delay-1">
           <div class="v-icon"><i class="fas fa-bullseye"></i></div>
           <h3>Precision</h3>
-          <p>From geophysical siting to final pump calibration, every step is executed with technical accuracy. We don't guess — we measure.</p>
+          <p>From geophysical siting to final pump calibration, every step is executed with technical accuracy. We don't guess — we measure, plan, and deliver.</p>
         </div>
         <div class="value-card reveal reveal-delay-2">
           <div class="v-icon"><i class="fas fa-shield-halved"></i></div>
           <h3>Reliability</h3>
-          <p>We own our equipment and control our schedule. When we commit to a project start date, we show up — with the right machinery and the right team.</p>
+          <p>We own our equipment and control our own schedule. When we commit to a project start date, we show up — with the right machinery and the right team.</p>
         </div>
         <div class="value-card reveal reveal-delay-3">
           <div class="v-icon"><i class="fas fa-handshake"></i></div>
           <h3>Transparency</h3>
-          <p>Clear quotes, honest timelines, and direct communication throughout your project. No hidden costs and no surprises at completion.</p>
+          <p>Clear quotes, honest timelines, direct communication throughout. No hidden costs and no surprises when the project is complete.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SECTORS -->
-  <section>
+  <!-- SECTORS WE SERVE -->
+  <section class="sectors-section">
     <div class="section-container">
       <div class="section-header reveal">
         <span class="section-label">Who We Serve</span>
@@ -430,24 +870,83 @@
       </div>
       <div class="sectors-grid">
         <div class="sector-card reveal reveal-delay-1">
-          <i class="fas fa-home"></i>
+          <div class="sector-icon-wrap"><i class="fas fa-home"></i></div>
           <h3>Residential</h3>
           <p>Private homes, townhouses, and clusters requiring a reliable, independent water supply.</p>
         </div>
         <div class="sector-card reveal reveal-delay-2">
-          <i class="fas fa-building"></i>
+          <div class="sector-icon-wrap"><i class="fas fa-building"></i></div>
           <h3>Commercial</h3>
           <p>Offices, schools, hospitals, and retail properties that need high-yield, dependable water access.</p>
         </div>
         <div class="sector-card reveal reveal-delay-3">
-          <i class="fas fa-tractor"></i>
+          <div class="sector-icon-wrap"><i class="fas fa-tractor"></i></div>
           <h3>Agricultural</h3>
           <p>Farms, irrigation projects, and livestock operations requiring large-volume, off-grid water solutions.</p>
         </div>
         <div class="sector-card reveal reveal-delay-4">
-          <i class="fas fa-industry"></i>
+          <div class="sector-icon-wrap"><i class="fas fa-industry"></i></div>
           <h3>Industrial</h3>
           <p>Manufacturing, construction, and processing sites with high-demand, continuous water requirements.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS (PROCESS) -->
+  <section class="process-section">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <span class="section-label" style="color:var(--teal-light)">The Process</span>
+        <h2 class="section-title" style="color:white;">From First Call <span>to Running Water</span></h2>
+        <p class="section-desc" style="color:rgba(255,255,255,0.55);">A straightforward end-to-end process, managed entirely by our team.</p>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;" class="process-cols">
+        <div class="process-track">
+          <div class="process-step reveal reveal-delay-1">
+            <div class="process-num"><span>01</span></div>
+            <div class="process-body">
+              <h3>Consultation & Quote</h3>
+              <p>Contact us by phone or WhatsApp. We discuss your property, intended use, and site conditions — then provide a clear quote with no hidden extras.</p>
+            </div>
+          </div>
+          <div class="process-step reveal reveal-delay-2">
+            <div class="process-num"><span>02</span></div>
+            <div class="process-body">
+              <h3>Geophysical Site Survey</h3>
+              <p>We use survey equipment to locate the optimal drilling point, maximising water yield before a single metre of ground is broken.</p>
+            </div>
+          </div>
+          <div class="process-step reveal reveal-delay-3">
+            <div class="process-num"><span>03</span></div>
+            <div class="process-body">
+              <h3>Drilling & Casing</h3>
+              <p>Our heavy rig drills to the target aquifer. Casing, screens, and headworks are installed to approved standards for lasting performance.</p>
+            </div>
+          </div>
+        </div>
+        <div class="process-track" style="padding-top: 0;">
+          <div class="process-step reveal reveal-delay-1">
+            <div class="process-num"><span>04</span></div>
+            <div class="process-body">
+              <h3>Pump Installation</h3>
+              <p>Submersible or surface pump — supplied, installed, wired, and tested. We also design and install solar-powered pump systems for off-grid sites.</p>
+            </div>
+          </div>
+          <div class="process-step reveal reveal-delay-2">
+            <div class="process-num"><span>05</span></div>
+            <div class="process-body">
+              <h3>Water Testing</h3>
+              <p>Pump yield and water quality are tested and documented at the end of every project so you have a complete record of your borehole's performance.</p>
+            </div>
+          </div>
+          <div class="process-step reveal reveal-delay-3">
+            <div class="process-num"><span>06</span></div>
+            <div class="process-body">
+              <h3>Handover & Support</h3>
+              <p>We walk you through the system and remain available for any follow-up questions. Your water is running — and we stand behind the work.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -457,7 +956,7 @@
   <section class="cta-section">
     <div class="section-container reveal">
       <h2>Let's Start Your Project</h2>
-      <p>Reach out for a free consultation and quote. We respond quickly and keep the process straightforward.</p>
+      <p>Reach out for a free consultation and quote. We respond quickly and keep the process straightforward from day one.</p>
       <div class="cta-actions">
         <a href="contact.html" class="btn-white"><i class="fas fa-file-alt"></i> Get a Free Quote</a>
         <a href="tel:+263777092746" class="btn-outline-white"><i class="fas fa-phone"></i> Call +263 777 092 746</a>
@@ -465,6 +964,7 @@
     </div>
   </section>
 
+  <!-- FOOTER -->
   <footer>
     <div class="footer-grid">
       <div class="footer-brand">
@@ -495,10 +995,22 @@
       </div>
       <div class="footer-col">
         <h4>Contact</h4>
-        <div class="footer-contact-item"><i class="fas fa-phone"></i><a href="tel:+263777092746">+263 777 092 746</a></div>
-        <div class="footer-contact-item"><i class="fab fa-whatsapp"></i><a href="https://wa.me/263777092746" target="_blank">WhatsApp Us</a></div>
-        <div class="footer-contact-item"><i class="fas fa-envelope"></i><a href="mailto:mwiwaboreholedrilling@gmail.com">mwiwaboreholedrilling@gmail.com</a></div>
-        <div class="footer-contact-item"><i class="fas fa-map-marker-alt"></i><span>Kamfinsa, 54VG+J8W, Harare, Zimbabwe</span></div>
+        <div class="footer-contact-item">
+          <i class="fas fa-phone"></i>
+          <a href="tel:+263777092746">+263 777 092 746</a>
+        </div>
+        <div class="footer-contact-item">
+          <i class="fab fa-whatsapp"></i>
+          <a href="https://wa.me/263777092746" target="_blank">WhatsApp Us</a>
+        </div>
+        <div class="footer-contact-item">
+          <i class="fas fa-envelope"></i>
+          <a href="mailto:mwiwaboreholedrilling@gmail.com">mwiwaboreholedrilling@gmail.com</a>
+        </div>
+        <div class="footer-contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Kamfinsa, 54VG+J8W, Harare, Zimbabwe</span>
+        </div>
       </div>
     </div>
     <div class="footer-bottom">
@@ -508,13 +1020,48 @@
   </footer>
 
   <script>
+    // --- Floating pill nav: add scrolled class ---
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    }, { passive: true });
+
+    // --- Mobile menu ---
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobileMenu');
-    hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+    });
+
+    // --- Scroll reveal ---
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: 0.12 });
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // --- Responsive process columns: stack on mobile ---
+    function stackProcessCols() {
+      const cols = document.querySelector('.process-cols');
+      if (!cols) return;
+      if (window.innerWidth < 768) {
+        cols.style.gridTemplateColumns = '1fr';
+        cols.style.gap = '0';
+      } else {
+        cols.style.gridTemplateColumns = '1fr 1fr';
+        cols.style.gap = '64px';
+      }
+    }
+    stackProcessCols();
+    window.addEventListener('resize', stackProcessCols);
   </script>
 </body>
 </html>
